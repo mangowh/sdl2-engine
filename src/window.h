@@ -4,23 +4,35 @@
 #include <SDL2/SDL.h>
 
 #include <iostream>
+#include <vector>
+#include <functional>
 
 class Window {
-	//Screen dimension constants
-	const int SCREEN_WIDTH = 640;
-	const int SCREEN_HEIGHT = 480;
 
-	//The window we'll be rendering to
+	/* Window title */
+	const std::string windowTitle = "test";
+
+	/* Screen width */
+	const int screenWidth = 640;
+
+	/* Screen height */
+	const int screenHeight = 480;
+
+	/* The window object to render to */
 	SDL_Window* gWindow = NULL;
-	//The surface contained by the window
-	SDL_Surface* gScreenSurface = NULL;
-	//The image we will load and show on the screen
-	SDL_Surface* gXOut = NULL;
-	//OpenGL context
-	SDL_GLContext gContext;
 
-	//Event handler
+	/* The surface contained by the window */
+	SDL_Surface* gScreenSurface = NULL;
+
+	SDL_Renderer* renderer = NULL;
+
+	/* Event handler */
 	SDL_Event e;
+
+	std::vector<std::function<void(void)>> updateCallbacks = {};
+	std::vector<std::function<void(SDL_Renderer*)>> renderCallbacks = {};
+
+	bool mainLoop();
 
 public:
 	Window();
@@ -29,12 +41,16 @@ public:
 	void init();
 	void initGL();
 
-	bool mainLoop();
+	void open();
+
+	void addUpdateCallback(std::function<void(void)> func);
+	void addRenderCallback(std::function<void(SDL_Renderer*)> func);
 
 	void update() const;
 	void render() const;
+	void renderGL() const;
 
 	void close();
 };
 
-#endif 
+#endif

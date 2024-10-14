@@ -17,10 +17,6 @@ Window::~Window()
 
 void Window::init()
 {
-	//Use OpenGL 2.1
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
-
 
 	//Initialize SDL
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
@@ -30,32 +26,17 @@ void Window::init()
 	else
 	{
 		//Create window
-		gWindow = SDL_CreateWindow("SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+		gWindow = SDL_CreateWindow(windowTitle.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, screenWidth, screenHeight, SDL_WINDOW_SHOWN);
 
 		if (gWindow == NULL)
 		{
 			printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
-
 		}
-		else {
-
-			gContext = SDL_GL_CreateContext(gWindow);
-
-			if (gContext == NULL)
-			{
-				printf("OpenGL context could not be created! SDL Error: %s\n", SDL_GetError());
-			}
-			else
-			{
-				//Use Vsync
-				if (SDL_GL_SetSwapInterval(1) < 0)
-				{
-					printf("Warning: Unable to set VSync! SDL Error: %s\n", SDL_GetError());
-				}
-
-				//Initialize OpenGL
-				initGL();
-			}
+		else
+		{
+			renderer = SDL_CreateRenderer(gWindow, -1, SDL_RENDERER_ACCELERATED);
+			SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+			SDL_RenderClear(renderer);
 		}
 	}
 }
@@ -98,6 +79,11 @@ void Window::initGL()
 	}
 }
 
+void Window::open()
+{
+	while (!mainLoop()) {}
+}
+
 bool Window::mainLoop()
 {
 	//Handle events on queue
@@ -108,23 +94,47 @@ bool Window::mainLoop()
 		{
 			return true;
 		}
-	}
 
-	update();
-	render();
+		update();
+		render();
+	}
+}
+
+void Window::addUpdateCallback(std::function<void(void)> func)
+{
+	updateCallbacks.push_back(func);
+}
+
+void Window::addRenderCallback(std::function<void(SDL_Renderer*)> func)
+{
+	renderCallbacks.push_back(func);
 }
 
 void Window::update() const
 {
-
+	for (auto& func : updateCallbacks) {
+		func();
+	}
 }
 
 void Window::render() const
 {
+	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+	SDL_RenderClear(renderer);
+
+	for (auto& func : renderCallbacks) {
+		func(renderer);
+	}
+
+	SDL_RenderPresent(renderer);
+}
+
+void Window::renderGL() const
+{
 	// EXAMPLE CUBE
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	glRotatef(0.4f, 0.0f, 1.0f, 0.0f);    // Rotate The cube around the Y axis
+	glRotatef(0.4f, 0.0f, 1.0f, 2.0f);    // Rotate The cube around the Y axis
 	glRotatef(0.2f, 1.0f, 1.0f, 1.0f);
 	glColor3f(0.0f, 1.0f, 0.0f);
 
@@ -141,12 +151,6 @@ void Window::render() const
 
 void Window::close()
 {
-	//Deallocate surface
-	if (gXOut) {
-		SDL_FreeSurface(gXOut);
-		gXOut = NULL;
-	}
-
 	//Destroy window
 	if (gWindow) {
 		SDL_DestroyWindow(gWindow);

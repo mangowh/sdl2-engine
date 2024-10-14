@@ -12,7 +12,7 @@ find_package(SDL2 CONFIG REQUIRED)
 find_package(OpenGL REQUIRED)
 
 # Add source to this project's executable.
-add_executable (CMakeProject1 "src/main.cpp"    "src/window.cpp" "src/window.h")
+add_executable (CMakeProject1 "src/main.cpp"    "src/Window.cpp" "src/Window.h" "src/Physics.h" "src/Physics.cpp" "src/EntityManager.h" "src/EntityManager.cpp" "src/Entity.h" "src/Entity.cpp")
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET CMakeProject1 PROPERTY CXX_STANDARD 20)
