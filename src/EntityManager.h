@@ -13,16 +13,20 @@ typedef std::map<std::string, EntityVec> EntityMap;
 
 class EntityManager {
 	EntityVec m_entities;
-	EntityVec m_toAdd;
 	EntityMap m_entityMap;
+	EntityVec m_toAdd;
+
 	int m_totalEntities = 0;
 
 public:
 	EntityManager();
+
+	void init();
 	void update();
+
 	std::shared_ptr<Entity> addEntity(const std::string& tag);
 	EntityVec& getEntities();
 	EntityVec& getEntities(const std::string& tag);
 };
 
-#endif
+#endif // ENTITY_MANAGER_H

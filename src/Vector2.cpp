@@ -1,4 +1,4 @@
-#include "Physics.h"
+#include "Vector2.h"
 
 Vector2 Vector2::operator+(const Vector2& rhs) const
 {
@@ -15,6 +15,3 @@ void Vector2::add(const Vector2& v)
 	x += v.x;
 	y += v.y;
 }
-
-
-

@@ -1,10 +1,5 @@
 #include "window.h"
 
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_opengl.h>
-
-#include <iostream>
-
 Window::Window()
 {
 	init();
@@ -17,7 +12,6 @@ Window::~Window()
 
 void Window::init()
 {
-
 	//Initialize SDL
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 	{
@@ -26,21 +20,94 @@ void Window::init()
 	else
 	{
 		//Create window
-		gWindow = SDL_CreateWindow(windowTitle.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, screenWidth, screenHeight, SDL_WINDOW_SHOWN);
+		window = SDL_CreateWindow(windowTitle.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, screenWidth, screenHeight, SDL_WINDOW_SHOWN);
 
-		if (gWindow == NULL)
+		if (window == NULL)
 		{
 			printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
 		}
 		else
 		{
-			renderer = SDL_CreateRenderer(gWindow, -1, SDL_RENDERER_ACCELERATED);
-			SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-			SDL_RenderClear(renderer);
+			renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 		}
 	}
 }
 
+void Window::open()
+{
+	while (!shouldQuit)
+	{
+		mainLoop();
+	}
+}
+
+void Window::mainLoop()
+{
+	//Handle events on queue
+	while (SDL_PollEvent(&e) != 0)
+	{
+		//User requests quit
+		if (e.type == SDL_QUIT || (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_ESCAPE))
+		{
+			shouldQuit = true;
+		}
+	}
+
+	update();
+}
+
+void Window::addCallback(std::function<void(void)> func)
+{
+	// TODO prevent adding while iterating
+	frameCallbacks.push_back(func);
+}
+
+void Window::update() const
+{
+	for (auto& func : frameCallbacks) {
+		func();
+	}
+}
+
+void Window::clear() const
+{
+	SDL_SetRenderDrawColor(renderer, 0, 0, 25, 255);
+	SDL_RenderClear(renderer);
+}
+
+void Window::close()
+{
+	//Destroy window
+	if (window) {
+		SDL_DestroyWindow(window);
+		window = NULL;
+	}
+
+	//Quit SDL subsystems
+	SDL_Quit();
+}
+
+void Window::draw() const
+{
+	SDL_RenderPresent(renderer);
+}
+
+void Window::drawShape(std::shared_ptr<CTransform> transform, std::shared_ptr<CShape> shape) const
+{
+	SDL_Color color = { .r = 255, .g = 100, .b = 0, .a = 255 };
+
+	if (shape->type == "circle") {
+		drawCircle(transform->pos.x, transform->pos.y, 10, color);
+	}
+	else
+	{
+		drawRect(transform->pos.x, transform->pos.y, 200, 100, color);
+	}
+}
+
+
+
+// experimental
 void Window::initGL()
 {
 	GLenum error = GL_NO_ERROR;
@@ -79,56 +146,6 @@ void Window::initGL()
 	}
 }
 
-void Window::open()
-{
-	while (!mainLoop()) {}
-}
-
-bool Window::mainLoop()
-{
-	//Handle events on queue
-	while (SDL_PollEvent(&e) != 0)
-	{
-		//User requests quit
-		if (e.type == SDL_QUIT)
-		{
-			return true;
-		}
-
-		update();
-		render();
-	}
-}
-
-void Window::addUpdateCallback(std::function<void(void)> func)
-{
-	updateCallbacks.push_back(func);
-}
-
-void Window::addRenderCallback(std::function<void(SDL_Renderer*)> func)
-{
-	renderCallbacks.push_back(func);
-}
-
-void Window::update() const
-{
-	for (auto& func : updateCallbacks) {
-		func();
-	}
-}
-
-void Window::render() const
-{
-	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-	SDL_RenderClear(renderer);
-
-	for (auto& func : renderCallbacks) {
-		func(renderer);
-	}
-
-	SDL_RenderPresent(renderer);
-}
-
 void Window::renderGL() const
 {
 	// EXAMPLE CUBE
@@ -146,17 +163,5 @@ void Window::renderGL() const
 	glEnd();
 	// ! END EXAMPLE CUBE
 
-	SDL_GL_SwapWindow(gWindow);
-}
-
-void Window::close()
-{
-	//Destroy window
-	if (gWindow) {
-		SDL_DestroyWindow(gWindow);
-		gWindow = NULL;
-	}
-
-	//Quit SDL subsystems
-	SDL_Quit();
+	SDL_GL_SwapWindow(window);
 }

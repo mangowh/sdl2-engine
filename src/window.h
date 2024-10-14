@@ -1,56 +1,89 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
-#include <SDL2/SDL.h>
+#include "CShape.h"
+#include "CTransform.h"
 
 #include <iostream>
 #include <vector>
+#include <memory>
 #include <functional>
 
-class Window {
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_opengl.h>
+
+class Window
+{
+	bool shouldQuit = false;
 
 	/* Window title */
 	const std::string windowTitle = "test";
-
 	/* Screen width */
 	const int screenWidth = 640;
-
 	/* Screen height */
 	const int screenHeight = 480;
-
 	/* The window object to render to */
-	SDL_Window* gWindow = NULL;
-
+	SDL_Window* window = NULL;
 	/* The surface contained by the window */
-	SDL_Surface* gScreenSurface = NULL;
-
+	SDL_Surface* surface = NULL;
 	SDL_Renderer* renderer = NULL;
-
 	/* Event handler */
 	SDL_Event e;
 
-	std::vector<std::function<void(void)>> updateCallbacks = {};
-	std::vector<std::function<void(SDL_Renderer*)>> renderCallbacks = {};
+	std::vector<std::function<void(void)>> frameCallbacks = {};
 
-	bool mainLoop();
+	void mainLoop();
 
 public:
 	Window();
 	~Window();
 
 	void init();
-	void initGL();
-
 	void open();
-
-	void addUpdateCallback(std::function<void(void)> func);
-	void addRenderCallback(std::function<void(SDL_Renderer*)> func);
-
+	void addCallback(std::function<void(void)> func);
 	void update() const;
-	void render() const;
-	void renderGL() const;
-
+	void clear() const;
 	void close();
+
+	void draw() const;
+
+	void drawShape(std::shared_ptr<CTransform> transform, std::shared_ptr<CShape> shape) const;
+
+	void drawCircle(int x, int y, int radius, SDL_Color color) const
+	{
+		SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
+		for (int w = 0; w < radius * 2; w++)
+		{
+			for (int h = 0; h < radius * 2; h++)
+			{
+				int dx = radius - w; // horizontal offset
+				int dy = radius - h; // vertical offset
+				if ((dx * dx + dy * dy) <= (radius * radius))
+				{
+					SDL_RenderDrawPoint(renderer, x + dx, y + dy);
+				}
+			}
+		}
+	}
+
+	void drawRect(int x, int y, int width, int height, SDL_Color color) const
+	{
+		SDL_Rect r;
+		r.x = x;
+		r.y = y;
+		r.w = width;
+		r.h = height;
+
+		SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
+
+		SDL_RenderFillRect(renderer, &r);
+	}
+
+
+
+	// experimental
+	void initGL();
+	void renderGL() const;
 };
 
-#endif
+#endif // WINDOW_H
