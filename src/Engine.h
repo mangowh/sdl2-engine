@@ -9,6 +9,8 @@ class Engine
 	double m_currentFrame = 0;
 	bool m_running = true;
 
+	std::shared_ptr<Entity> player;
+
 	Window window;
 	EntityManager entityManager;
 

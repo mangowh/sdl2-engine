@@ -28,8 +28,7 @@ class Window
 	SDL_Surface* surface = NULL;
 	SDL_Renderer* renderer = NULL;
 	/* Event handler */
-	SDL_Event e;
-
+	SDL_Event pollEvent();
 	std::vector<std::function<void(void)>> frameCallbacks = {};
 
 	void mainLoop();
@@ -37,6 +36,8 @@ class Window
 public:
 	Window();
 	~Window();
+
+	const Uint8* keyboardState;
 
 	void init();
 	void open();

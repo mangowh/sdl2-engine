@@ -44,17 +44,29 @@ void Window::open()
 void Window::mainLoop()
 {
 	//Handle events on queue
-	while (SDL_PollEvent(&e) != 0)
+	auto event = pollEvent();
+
+	//User requests quit
+	if (event.type == SDL_QUIT || (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE))
 	{
-		//User requests quit
-		if (e.type == SDL_QUIT || (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_ESCAPE))
-		{
-			shouldQuit = true;
-		}
+		shouldQuit = true;
 	}
+
+	// Get the keyboard state
+	keyboardState = SDL_GetKeyboardState(NULL);
 
 	update();
 }
+
+SDL_Event Window::pollEvent()
+{
+	SDL_Event event;
+	while (SDL_PollEvent(&event) != 0)
+	{
+		return event;
+	}
+}
+
 
 void Window::addCallback(std::function<void(void)> func)
 {

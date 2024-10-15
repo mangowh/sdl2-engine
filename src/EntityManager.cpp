@@ -28,3 +28,8 @@ EntityVec& EntityManager::getEntities()
 {
 	return m_entities;
 }
+
+EntityVec& EntityManager::getEntities(const std::string& tag)
+{
+	return m_entityMap[tag];
+}
