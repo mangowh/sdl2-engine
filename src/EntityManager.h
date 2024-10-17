@@ -9,7 +9,7 @@
 #include <map>
 
 typedef std::vector<std::shared_ptr<Entity>> EntityVec;
-typedef std::map<std::string, EntityVec> EntityMap;
+typedef std::map<EntityType, EntityVec> EntityMap;
 
 class EntityManager {
 	EntityVec m_entities;
@@ -24,9 +24,9 @@ public:
 	void init();
 	void update();
 
-	std::shared_ptr<Entity> addEntity(const std::string& tag);
+	std::shared_ptr<Entity> addEntity(EntityType tag);
 	EntityVec& getEntities();
-	EntityVec& getEntities(const std::string& tag);
+	EntityVec& getEntities(EntityType tag);
 };
 
 #endif // ENTITY_MANAGER_H

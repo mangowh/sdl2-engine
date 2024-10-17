@@ -1,11 +1,31 @@
 #include "Vector2.h"
 
-Vector2 Vector2::operator+(const Vector2& rhs) const
+bool Vector2::operator== (const Vector2& v) const
 {
-	return Vector2(x + rhs.x, y + rhs.y);
+	return x == v.x && y == v.y;
 }
 
-void Vector2::operator+=(const Vector2& v)
+bool Vector2::operator!=(const Vector2& v) const
+{
+	return x != v.x || y != v.y;
+}
+
+Vector2 Vector2::operator+ (const Vector2& v) const
+{
+	return Vector2(x + v.x, y + v.y);
+}
+
+Vector2 Vector2::operator-(const Vector2& v) const
+{
+	return Vector2(x - v.x, y - v.y);
+}
+
+Vector2 Vector2::operator*(const float f) const
+{
+	return Vector2(x * f, y * f);
+}
+
+void Vector2::operator+= (const Vector2& v)
 {
 	add(v);
 }

@@ -7,22 +7,29 @@
 #include <string>
 #include <memory>
 
+enum class EntityType {
+	player,
+	enemy
+};
+
 class Entity
 {
 	const int m_id = 0;
-	/** Entity type. TODO create enum*/
-	const std::string m_tag = "Default";
+	const EntityType m_tag;
 	bool m_active = true;
 
 public:
-	Entity(const std::string& tag, int id);
+	Entity(const EntityType tag, const int id)
+		: m_tag(tag)
+		, m_id(id)
+	{};
 
 	std::shared_ptr<CTransform> cTransform;
 	std::shared_ptr<CShape> cShape;
 	//std::shared_ptr<CCollision> cCollision;
 	//std::shared_ptr<CInput> cInput;
 	//std::shared_ptr<CScore> cScore;
-	//std::shared_ptr<cLifespan> cLifespan;
+	//std::shared_ptr<CLifespan> cLifespan;
 
 	int id() const { return m_id; }
 	auto tag() const { return m_tag; }

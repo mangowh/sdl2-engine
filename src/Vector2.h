@@ -14,15 +14,24 @@ public:
 		, y(_y)
 	{}
 
-	Vector2 operator == (const Vector2& v) const;
-	Vector2 operator != (const Vector2& v) const;
-	Vector2 operator + (const Vector2& v) const;
-	Vector2 operator - (const Vector2& v) const;
-	Vector2 operator * (const Vector2& v) const;
-	Vector2 operator / (const Vector2& v) const;
-	void operator += (const Vector2& v);
+	bool operator== (const Vector2& v) const;
+	bool operator!= (const Vector2& v) const;
+
+	Vector2 operator+ (const Vector2& v) const;
+	Vector2 operator- (const Vector2& v) const;
+
+	Vector2 operator* (const float f) const;
+	Vector2 operator* (const Vector2& v) const;
+
+	Vector2 operator/ (const Vector2& v) const;
+
+	void operator+= (const Vector2& v);
+	void operator-= (const Vector2& v);
+	void operator*= (const Vector2& v);
+	void operator/= (const Vector2& v);
 
 	void add(const Vector2& v);
+	
 	void normalize();
 };
 

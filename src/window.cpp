@@ -1,5 +1,8 @@
 #include "window.h"
 
+const int TARGET_FPS = 60;
+const int FRAME_DELAY = 1000 / TARGET_FPS;  // Frame delay in milliseconds
+
 Window::Window()
 {
 	init();
@@ -43,6 +46,8 @@ void Window::open()
 
 void Window::mainLoop()
 {
+	Uint32 frameStart = SDL_GetTicks();  // Start time for frame
+
 	//Handle events on queue
 	auto event = pollEvent();
 
@@ -56,6 +61,12 @@ void Window::mainLoop()
 	keyboardState = SDL_GetKeyboardState(NULL);
 
 	update();
+
+	// Calculate frame time and delay to maintain fixed FPS
+	Uint32 frameTime = SDL_GetTicks() - frameStart;
+	if (frameTime < FRAME_DELAY) {
+		SDL_Delay(FRAME_DELAY - frameTime); // Delay the remaining time to maintain FPS
+	}
 }
 
 SDL_Event Window::pollEvent()
@@ -106,14 +117,14 @@ void Window::draw() const
 
 void Window::drawShape(std::shared_ptr<CTransform> transform, std::shared_ptr<CShape> shape) const
 {
-	SDL_Color color = { .r = 255, .g = 100, .b = 0, .a = 255 };
+	SDL_Color color = { .r = shape->color.r, .g = shape->color.g, .b = shape->color.b , .a = shape->color.a };
 
-	if (shape->type == "circle") {
-		drawCircle(transform->pos.x, transform->pos.y, 10, color);
+	if (shape->type == circle) {
+		drawCircle(transform->pos.x, transform->pos.y, shape->radius, color);
 	}
 	else
 	{
-		drawRect(transform->pos.x, transform->pos.y, 200, 100, color);
+		drawRect(transform->pos.x, transform->pos.y, shape->width, shape->height, color);
 	}
 }
 

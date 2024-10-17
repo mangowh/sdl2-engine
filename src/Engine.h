@@ -7,7 +7,7 @@
 class Engine
 {
 	double m_currentFrame = 0;
-	bool m_running = true;
+	bool m_running = false;
 
 	std::shared_ptr<Entity> player;
 
@@ -19,8 +19,8 @@ public:
 
 	void init();
 	void update();
-	// todo rework
-	void mainLoop();
+
+	void run();
 
 	void sMovement();
 	void sUserInput();
