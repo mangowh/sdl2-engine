@@ -3,16 +3,29 @@
 
 #include "EntityManager.h"
 #include "Window.h"
+#include "Random.h"
 
 class Engine
 {
-	double m_currentFrame = 0;
-	bool m_running = false;
+	Window window;
+	EntityManager entityManager;
+
+	// systems
+	void sMovement();
+	void sCollision();
+	void sUserInput();
+	void sEnemySpawner();
+	void sRender();
+
+	//font & text
 
 	std::shared_ptr<Entity> player;
 
-	Window window;
-	EntityManager entityManager;
+	int currentFrame = 0;
+
+	bool paused = false;
+
+	// various configurations
 
 public:
 	Engine();
@@ -21,12 +34,11 @@ public:
 	void update();
 
 	void run();
+	void pause();
 
-	void sMovement();
-	void sUserInput();
-	void sRender();
-	void sEnemySpawner();
-	void sCollision();
+	void spawnEnemy();
+
+	auto isRunning() { return paused; }
 };
 
 #endif // !ENGINE_H

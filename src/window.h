@@ -19,9 +19,9 @@ class Window
 	/* Window title */
 	const std::string windowTitle = "test";
 	/* Screen width */
-	const int screenWidth = 640;
+	const int screenWidth = 1920;
 	/* Screen height */
-	const int screenHeight = 480;
+	const int screenHeight = 1080;
 	/* The window object to render to */
 	SDL_Window* window = NULL;
 	/* The surface contained by the window */
@@ -47,6 +47,11 @@ public:
 	void close();
 
 	void draw() const;
+
+	int getWidth() const;
+	int getHeight() const;
+
+	void setFullscreen() const;
 
 	void drawShape(std::shared_ptr<CTransform> transform, std::shared_ptr<CShape> shape) const;
 

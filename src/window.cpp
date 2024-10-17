@@ -31,7 +31,7 @@ void Window::init()
 		}
 		else
 		{
-			renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+			renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 		}
 	}
 }
@@ -115,12 +115,35 @@ void Window::draw() const
 	SDL_RenderPresent(renderer);
 }
 
+int Window::getWidth() const
+{
+	int w;
+
+	SDL_GetRendererOutputSize(renderer, &w, NULL);
+
+	return w;
+}
+
+int Window::getHeight() const
+{
+	int h;
+
+	SDL_GetRendererOutputSize(renderer, NULL, &h);
+
+	return h;
+}
+
+void Window::setFullscreen() const
+{
+	SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
+}
+
 void Window::drawShape(std::shared_ptr<CTransform> transform, std::shared_ptr<CShape> shape) const
 {
 	SDL_Color color = { .r = shape->color.r, .g = shape->color.g, .b = shape->color.b , .a = shape->color.a };
 
 	if (shape->type == circle) {
-		drawCircle(transform->pos.x, transform->pos.y, shape->radius, color);
+		drawCircle(transform->pos.x + shape->radius, transform->pos.y + shape->radius, shape->radius, color);
 	}
 	else
 	{

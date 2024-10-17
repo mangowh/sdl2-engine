@@ -3,6 +3,10 @@
 
 #include "CTransform.h"
 #include "CShape.h"
+#include "CInput.h"
+#include "CLifespan.h"
+#include "CScore.h"
+#include "CCollision.h"
 
 #include <string>
 #include <memory>
@@ -26,14 +30,15 @@ public:
 
 	std::shared_ptr<CTransform> cTransform;
 	std::shared_ptr<CShape> cShape;
-	//std::shared_ptr<CCollision> cCollision;
-	//std::shared_ptr<CInput> cInput;
-	//std::shared_ptr<CScore> cScore;
-	//std::shared_ptr<CLifespan> cLifespan;
+	std::shared_ptr<CCollision> cCollision;
+	std::shared_ptr<CInput> cInput;
+	std::shared_ptr<CScore> cScore;
+	std::shared_ptr<CLifespan> cLifespan;
 
-	int id() const { return m_id; }
+	auto id() const { return m_id; }
 	auto tag() const { return m_tag; }
-	bool isActive() const { return m_active; }
+	auto isActive() const { return m_active; }
+	
 	void destroy();
 };
 
