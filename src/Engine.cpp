@@ -1,6 +1,6 @@
 #include "Engine.h"
 
-const int PLAYER_SPEED = 5;
+const int PLAYER_SPEED = 10;
 
 Engine::Engine()
 {
@@ -9,13 +9,6 @@ Engine::Engine()
 
 void Engine::init()
 {
-	Vector2 centerOfScreen = { (window.getWidth() - 100) / 2.0f, (window.getHeight() - 100) / 2.0f };
-
-	player = entityManager.addEntity(EntityType::player);
-	player->cTransform = std::make_shared<CTransform>(centerOfScreen);
-	player->cShape = std::make_shared<CShape>(CShape(100, 100, { 255,100,0 }));
-	player->cCollision = std::make_shared<CCollision>(centerOfScreen + 50, 100 / 2);
-
 	window.addCallback([&]()
 		{
 			entityManager.update();
@@ -27,6 +20,7 @@ void Engine::init()
 				sCollision();
 				sMovement();
 				sLifespan();
+				sEnemySpawner();
 			}
 
 			sRender();
@@ -39,7 +33,11 @@ void Engine::init()
 			spawnProjectile(coords);
 		};
 
-	window.open();
+	spawnPlayer();
+
+	{
+		window.open();
+	}
 }
 
 void Engine::run()
@@ -50,6 +48,16 @@ void Engine::run()
 void Engine::pause()
 {
 	paused = true;
+}
+
+void Engine::spawnPlayer()
+{
+	Vector2 centerOfScreen = { (window.getWidth() - 100) / 2.0f, (window.getHeight() - 100) / 2.0f };
+
+	player = entityManager.addEntity(EntityType::player);
+	player->cTransform = std::make_shared<CTransform>(centerOfScreen);
+	player->cShape = std::make_shared<CShape>(CShape(100, 100, { 255,100,0 }));
+	player->cCollision = std::make_shared<CCollision>(centerOfScreen + 50, 100 / 2);
 }
 
 void Engine::spawnEnemy()
@@ -80,7 +88,7 @@ void Engine::spawnProjectile(Vector2 direction)
 	auto projectile = entityManager.addEntity(EntityType::projectile);
 	projectile->cTransform = std::make_shared<CTransform>(CTransform(
 		playerCenter,
-		directionFromPlayer.normalized() * 10
+		directionFromPlayer.normalized() * 20
 	));
 
 	const Color randomColor = { (uint8_t)rand.genRandomInt(0, 255), (uint8_t)rand.genRandomInt(0, 255), (uint8_t)rand.genRandomInt(0, 255) };
@@ -240,10 +248,6 @@ void Engine::sUserInput()
 	if (keyboardState[SDL_SCANCODE_F]) {
 		window.setFullscreen();
 	}
-
-	if (keyboardState[SDL_SCANCODE_E]) {
-		spawnEnemy();
-	}
 }
 
 void Engine::sLifespan()
@@ -259,6 +263,14 @@ void Engine::sLifespan()
 				e->destroy();
 			}
 		}
+	}
+}
+
+void Engine::sEnemySpawner()
+{
+	if (currentFrame % 100 == 0)
+	{
+		spawnEnemy();
 	}
 }
 

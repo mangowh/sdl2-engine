@@ -37,6 +37,7 @@ public:
 	void run();
 	void pause();
 
+	void spawnPlayer();
 	void spawnEnemy();
 	void spawnProjectile(Vector2 direction);
 

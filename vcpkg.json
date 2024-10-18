@@ -1,6 +1,8 @@
 {
   "dependencies": [
+    "opengl",
     "sdl2",
-    "opengl"
+    "sol2",
+    "lua"
   ]
 }

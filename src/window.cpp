@@ -86,7 +86,6 @@ SDL_Event Window::pollEvent()
 	}
 }
 
-
 void Window::addCallback(std::function<void(void)> func)
 {
 	// TODO prevent adding while iterating
