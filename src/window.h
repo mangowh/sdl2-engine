@@ -3,10 +3,12 @@
 
 #include "CShape.h"
 #include "CTransform.h"
+#include "Entity.h"
 
 #include <iostream>
 #include <vector>
 #include <memory>
+#include <cmath>
 #include <functional>
 
 #include <SDL2/SDL.h>
@@ -46,46 +48,24 @@ public:
 	void clear() const;
 	void close();
 
-	void draw() const;
+	void render() const;
 
 	int getWidth() const;
 	int getHeight() const;
 
 	void setFullscreen() const;
 
+	// callbacks
+	std::function<void(Vector2)> onClick = NULL;
+
+	// drawing
 	void drawShape(std::shared_ptr<CTransform> transform, std::shared_ptr<CShape> shape) const;
+	void drawPoint(int x, int y, SDL_Color color) const;
+	void drawRect(int x, int y, int width, int height, SDL_Color color) const;
+	void drawTriangle(Vector2 v1, Vector2 v2, Vector2 v3, SDL_Color color) const;
+	void drawCircle(Vector2 center, float radius, SDL_Color color, int numSegments) const;
 
-	void drawCircle(int x, int y, int radius, SDL_Color color) const
-	{
-		SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
-		for (int w = 0; w < radius * 2; w++)
-		{
-			for (int h = 0; h < radius * 2; h++)
-			{
-				int dx = radius - w; // horizontal offset
-				int dy = radius - h; // vertical offset
-				if ((dx * dx + dy * dy) <= (radius * radius))
-				{
-					SDL_RenderDrawPoint(renderer, x + dx, y + dy);
-				}
-			}
-		}
-	}
-
-	void drawRect(int x, int y, int width, int height, SDL_Color color) const
-	{
-		SDL_Rect r;
-		r.x = x;
-		r.y = y;
-		r.w = width;
-		r.h = height;
-
-		SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
-
-		SDL_RenderFillRect(renderer, &r);
-	}
-
-
+	void drawDebug(std::shared_ptr<Entity> e) const;
 
 	// experimental
 	void initGL();

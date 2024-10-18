@@ -14,6 +14,7 @@ class Engine
 	void sMovement();
 	void sCollision();
 	void sUserInput();
+	void sLifespan();
 	void sEnemySpawner();
 	void sRender();
 
@@ -37,6 +38,7 @@ public:
 	void pause();
 
 	void spawnEnemy();
+	void spawnProjectile(Vector2 direction);
 
 	auto isRunning() { return paused; }
 };

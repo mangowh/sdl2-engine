@@ -57,6 +57,14 @@ void Window::mainLoop()
 		shouldQuit = true;
 	}
 
+	if (onClick && event.type == SDL_MOUSEBUTTONDOWN) {
+		int x, y;
+		Uint32 buttons = SDL_GetMouseState(&x, &y);
+
+		Vector2 coords = Vector2(x, y);
+		onClick(coords);
+	}
+
 	// Get the keyboard state
 	keyboardState = SDL_GetKeyboardState(NULL);
 
@@ -110,7 +118,7 @@ void Window::close()
 	SDL_Quit();
 }
 
-void Window::draw() const
+void Window::render() const
 {
 	SDL_RenderPresent(renderer);
 }
@@ -142,8 +150,8 @@ void Window::drawShape(std::shared_ptr<CTransform> transform, std::shared_ptr<CS
 {
 	SDL_Color color = { .r = shape->color.r, .g = shape->color.g, .b = shape->color.b , .a = shape->color.a };
 
-	if (shape->type == circle) {
-		drawCircle(transform->pos.x + shape->radius, transform->pos.y + shape->radius, shape->radius, color);
+	if (shape->type == triangle) {
+		drawTriangle(shape->verts[0], shape->verts[1], shape->verts[2], color);
 	}
 	else
 	{
@@ -151,7 +159,80 @@ void Window::drawShape(std::shared_ptr<CTransform> transform, std::shared_ptr<CS
 	}
 }
 
+void Window::drawPoint(int x, int y, SDL_Color color) const
+{
+	SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
 
+	SDL_RenderDrawPoint(renderer, x, y);
+}
+
+void Window::drawRect(int x, int y, int width, int height, SDL_Color color) const
+{
+	SDL_Rect r;
+	r.x = x;
+	r.y = y;
+	r.w = width;
+	r.h = height;
+
+	SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
+
+	SDL_RenderFillRect(renderer, &r);
+}
+
+void Window::drawTriangle(Vector2 v1, Vector2 v2, Vector2 v3, SDL_Color color) const
+{
+	const std::vector< SDL_Vertex > verts =
+	{
+		{ SDL_FPoint{ v1.x, v1.y }, color },
+		{ SDL_FPoint{ v2.x, v2.y }, color },
+		{ SDL_FPoint{ v3.x, v3.y }, color }
+	};
+
+	SDL_RenderGeometry(renderer, nullptr, verts.data(), verts.size(), nullptr, 0);
+}
+
+void Window::drawCircle(Vector2 center, float radius, SDL_Color color, int numSegments = 100) const
+{
+	std::vector<SDL_Vertex> vertices;
+
+	// Create vertices around the perimeter of the circle
+	for (int i = 0; i <= numSegments; ++i) {
+		float theta = 2.0f * M_PI * float(i) / float(numSegments);  // Angle in radians
+		float x = center.x + radius * cosf(theta);                 // X coordinate
+		float y = center.y + radius * sinf(theta);                 // Y coordinate
+
+		SDL_Vertex vertex;
+		vertex.position.x = x;
+		vertex.position.y = y;
+		vertex.color = color;
+		vertices.push_back(vertex);
+	}
+
+	// Draw line segments by creating degenerate triangles
+	// Each pair of consecutive vertices forms the line
+	for (int i = 0; i < numSegments; ++i) {
+		SDL_RenderDrawLine(renderer, vertices[i].position.x, vertices[i].position.y,
+			vertices[i + 1].position.x, vertices[i + 1].position.y);
+	}
+}
+
+void Window::drawDebug(std::shared_ptr<Entity> e) const
+{
+	if (e->cTransform) {
+		const auto pos = e->cTransform->pos;
+
+		drawRect(pos.x - 3, pos.y - 3, 6, 6, { 255, 30, 40 });
+
+		drawRect(pos.x - 3, pos.y - 3, 6, 6, { 255, 30, 40 });
+	}
+
+	if (e->cCollision) {
+		const auto pos = e->cCollision->center;
+
+		drawRect(pos.x - 3, pos.y - 3, 6, 6, { 15, 30, 240 });
+		drawCircle(pos, e->cCollision->radius, { 15, 230, 240 });
+	}
+}
 
 // experimental
 void Window::initGL()

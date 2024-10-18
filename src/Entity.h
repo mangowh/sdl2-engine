@@ -7,13 +7,15 @@
 #include "CLifespan.h"
 #include "CScore.h"
 #include "CCollision.h"
+#include "CLifespan.h"
 
 #include <string>
 #include <memory>
 
 enum class EntityType {
 	player,
-	enemy
+	enemy,
+	projectile
 };
 
 class Entity

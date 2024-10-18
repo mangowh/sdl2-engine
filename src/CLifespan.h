@@ -3,10 +3,11 @@
 class CLifespan
 {
 public:
+	const int total = 0;
 	int remaining = 0;
-	int total = 0;
-	
+
 	CLifespan(int total)
-		: remaining(total), total(total)
+		: total(total)
+		, remaining(total)
 	{}
 };

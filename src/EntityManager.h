@@ -7,6 +7,7 @@
 #include <memory>
 #include <vector>
 #include <map>
+#include <algorithm>
 
 typedef std::vector<std::shared_ptr<Entity>> EntityVec;
 typedef std::map<EntityType, EntityVec> EntityMap;
@@ -27,6 +28,8 @@ public:
 	std::shared_ptr<Entity> addEntity(EntityType tag);
 	EntityVec& getEntities();
 	EntityVec& getEntities(EntityType tag);
+
+	void removeEntity(std::shared_ptr<Entity> e);
 };
 
 #endif // ENTITY_MANAGER_H

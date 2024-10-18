@@ -1,11 +1,15 @@
 #pragma once
 
+#include "Vector2.h";
+
 class CCollision
 {
 public:
-	float radius = 0;
+	Vector2 center;
+	float radius;
 
-	CCollision(float r)
-		: radius(r)
+	CCollision(Vector2 center, float radius)
+		: center(center)
+		, radius(radius)
 	{}
 };

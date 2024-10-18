@@ -2,20 +2,22 @@
 #define CSCHAPE_H
 
 #include "Color.h"
+#include "Vector2.h"
 
 #include <string>
+#include <vector>
 
 enum ShapeType {
-	circle,
+	triangle,
 	rect
 };
 
 class CShape
 {
 public:
-	CShape(float radius, Color color = { 255,255,255 })
-		: type(circle)
-		, radius(radius)
+	CShape(Vector2 v1, Vector2 v2, Vector2 v3, Color color = { 255,255,255 })
+		: type(triangle)
+		, verts(std::vector({v1, v2, v3}))
 		, color(color)
 	{}
 
@@ -26,14 +28,12 @@ public:
 		, color(color)
 	{}
 
-	const ShapeType type{ circle };
+	const ShapeType type{ triangle };
 
-	// reserved for circle
-	float radius{ 0 };
-
-	// reserved for rect
 	float width{ 0 };
 	float height{ 0 };
+
+	std::vector<Vector2> verts;
 
 	Color color{ 255,255,255 };
 };

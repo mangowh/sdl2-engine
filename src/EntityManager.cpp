@@ -11,7 +11,13 @@ void EntityManager::update()
 		m_entityMap[e->tag()].push_back(e);
 	}
 	for (auto& e : m_entities) {
-		// TODO remove dead entities
+		if (e)
+		{
+			if (!e->isActive())
+			{
+				removeEntity(e);
+			}
+		}
 	}
 	m_toAdd.clear();
 }
@@ -32,4 +38,15 @@ EntityVec& EntityManager::getEntities()
 EntityVec& EntityManager::getEntities(const EntityType tag)
 {
 	return m_entityMap[tag];
+}
+
+void EntityManager::removeEntity(std::shared_ptr<Entity> e)
+{
+	m_entities.erase(std::remove_if(m_entities.begin(), m_entities.end(),
+		[&](const std::shared_ptr<Entity> _e) { return e->id() == _e->id(); }),
+		m_entities.end());
+
+	m_entityMap[e->tag()].erase(std::remove_if(m_entityMap[e->tag()].begin(), m_entityMap[e->tag()].end(),
+		[&](const std::shared_ptr<Entity> _e) { return e->id() == _e->id(); }),
+		m_entityMap[e->tag()].end());
 }
