@@ -1,8 +1,7 @@
 #include "Engine.h"
 
-const int PLAYER_SPEED = 10;
-
-Engine::Engine()
+Engine::Engine(Config config)
+	: config(config)
 {
 	init();
 }
@@ -207,11 +206,11 @@ void Engine::sUserInput()
 
 	// Player movement
 	if (keyboardState[SDL_SCANCODE_W]) {
-		player->cTransform->velocity.y = -PLAYER_SPEED;
+		player->cTransform->velocity.y = -config.playerSpeed;
 	}
 	else if (keyboardState[SDL_SCANCODE_S])
 	{
-		player->cTransform->velocity.y = PLAYER_SPEED;
+		player->cTransform->velocity.y = config.playerSpeed;
 	}
 	else
 	{
@@ -219,11 +218,11 @@ void Engine::sUserInput()
 	}
 
 	if (keyboardState[SDL_SCANCODE_A]) {
-		player->cTransform->velocity.x = -PLAYER_SPEED;
+		player->cTransform->velocity.x = -config.playerSpeed;
 	}
 	else if (keyboardState[SDL_SCANCODE_D])
 	{
-		player->cTransform->velocity.x = PLAYER_SPEED;
+		player->cTransform->velocity.x = config.playerSpeed;
 	}
 	else
 	{

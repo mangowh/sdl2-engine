@@ -5,8 +5,15 @@
 #include "Window.h"
 #include "Random.h"
 
+struct Config
+{
+	double playerSpeed{ 10 };
+};
+
 class Engine
 {
+	Config config;
+
 	Window window;
 	EntityManager entityManager;
 
@@ -29,7 +36,7 @@ class Engine
 	// various configurations
 
 public:
-	Engine();
+	Engine(Config config = {});
 
 	void init();
 	void update();
