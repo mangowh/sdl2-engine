@@ -57,6 +57,7 @@ public:
 
 	// callbacks
 	std::function<void(Vector2)> onClick = NULL;
+	std::function<void(Vector2)> onRightClick = NULL;
 
 	// drawing
 	void drawShape(std::shared_ptr<CTransform> transform, std::shared_ptr<CShape> shape) const;

@@ -16,6 +16,8 @@ public:
 		, y(_y)
 	{}
 
+	Vector2& operator= (const Vector2& v);
+
 	bool operator== (const Vector2& v) const;
 	bool operator!= (const Vector2& v) const;
 

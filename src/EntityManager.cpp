@@ -25,8 +25,7 @@ void EntityManager::update()
 std::shared_ptr<Entity> EntityManager::addEntity(const EntityType tag)
 {
 	auto newEntity = std::make_shared<Entity>(tag, m_totalEntities++);
-	m_entities.push_back(newEntity);
-	m_entityMap[tag].push_back(newEntity);
+	m_toAdd.push_back(newEntity);
 	return newEntity;
 }
 

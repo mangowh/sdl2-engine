@@ -12,6 +12,11 @@
 #include <sol/sol.hpp>
 #include <yaml-cpp/yaml.h>
 
+void printException(std::runtime_error e) {
+	std::cerr << __FILE__ << ":" << __LINE__ << "\n" << "Error" << std::endl;
+	std::cerr << e.what() << std::endl;
+}
+
 int main(int argc, char* argv[])
 {
 	SDL_SetMainReady();
@@ -24,13 +29,12 @@ int main(int argc, char* argv[])
 
 		if (node["playerSpeed"])
 		{
-			config.playerSpeed = node["playerSpeed"].as<int>();
+			config.playerSpeed = node["playerSpeed"].as<float>();
 		}
 	}
 	catch (const YAML::Exception& e)
 	{
-		std::cerr << __FILE__ << ":" << __LINE__ << "\n" << "Error parsing YAML configuration" << std::endl;
-		std::cerr << e.what() << std::endl;
+		printException(e);
 	}
 
 	// load lua scripts

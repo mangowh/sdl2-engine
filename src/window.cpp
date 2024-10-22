@@ -57,12 +57,20 @@ void Window::mainLoop()
 		shouldQuit = true;
 	}
 
-	if (onClick && event.type == SDL_MOUSEBUTTONDOWN) {
+	if (onClick && event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
 		int x, y;
 		Uint32 buttons = SDL_GetMouseState(&x, &y);
 
-		Vector2 coords = Vector2(x, y);
+		Vector2 coords = Vector2((float)x, (float)y);
 		onClick(coords);
+	}
+
+	if (onRightClick && event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_RIGHT) {
+		int x, y;
+		Uint32 buttons = SDL_GetMouseState(&x, &y);
+
+		Vector2 coords = Vector2((float)x, (float)y);
+		onRightClick(coords);
 	}
 
 	// Get the keyboard state

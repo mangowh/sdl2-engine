@@ -7,7 +7,7 @@
 
 struct Config
 {
-	double playerSpeed{ 10 };
+	float playerSpeed{ 10.0f };
 };
 
 class Engine
@@ -47,6 +47,7 @@ public:
 	void spawnPlayer();
 	void spawnEnemy();
 	void spawnProjectile(Vector2 direction);
+	void specialMove(Vector2 position);
 
 	auto isRunning() { return paused; }
 };
