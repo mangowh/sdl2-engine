@@ -2,14 +2,10 @@
 
 #include "Vector2.h"
 
-class CCollision
-{
+class CCollision {
 public:
-	Vector2 center;
-	float radius;
+  Vector2 center;
+  float radius;
 
-	CCollision(Vector2 center, float radius)
-		: center(center)
-		, radius(radius)
-	{}
+  CCollision(Vector2 center, float radius) : center(center), radius(radius) {}
 };

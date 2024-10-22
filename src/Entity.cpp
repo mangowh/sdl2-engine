@@ -1,6 +1,3 @@
 #include "Entity.h"
 
-void Entity::destroy()
-{
-	m_active = false;
-}
+void Entity::destroy() { m_active = false; }

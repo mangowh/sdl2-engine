@@ -2,54 +2,52 @@
 #define ENGINE_H
 
 #include "EntityManager.h"
-#include "Window.h"
 #include "Random.h"
+#include "Window.h"
 
-struct Config
-{
-	float playerSpeed{ 10.0f };
+struct Config {
+  float playerSpeed{10.0f};
 };
 
-class Engine
-{
-	Config config;
+class Engine {
+  Config config;
 
-	Window window;
-	EntityManager entityManager;
+  Window window;
+  EntityManager entityManager;
 
-	// systems
-	void sMovement();
-	void sCollision();
-	void sUserInput();
-	void sLifespan();
-	void sEnemySpawner();
-	void sRender();
+  // systems
+  void sMovement();
+  void sCollision();
+  void sUserInput();
+  void sLifespan();
+  void sEnemySpawner();
+  void sRender();
 
-	//font & text
+  // font & text
 
-	std::shared_ptr<Entity> player;
+  std::shared_ptr<Entity> player;
 
-	int currentFrame = 0;
+  int currentFrame = 0;
 
-	bool paused = false;
+  bool paused = false;
 
-	// various configurations
+  // various configurations
 
 public:
-	Engine(Config config = {});
+  Engine(Config config = {});
 
-	void init();
-	void update();
+  void init();
+  void update();
 
-	void run();
-	void pause();
+  void run();
+  void pause();
 
-	void spawnPlayer();
-	void spawnEnemy();
-	void spawnProjectile(Vector2 direction);
-	void specialMove(Vector2 position);
+  void spawnPlayer();
+  void spawnEnemy();
+  void spawnProjectile(Vector2 direction);
+  void specialMove(Vector2 position);
 
-	auto isRunning() { return paused; }
+  auto isRunning() { return paused; }
 };
 
 #endif // !ENGINE_H

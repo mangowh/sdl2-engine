@@ -1,13 +1,9 @@
 #pragma once
 
-class CLifespan
-{
+class CLifespan {
 public:
-	const int total = 0;
-	int remaining = 0;
+  const int total = 0;
+  int remaining = 0;
 
-	CLifespan(int total)
-		: total(total)
-		, remaining(total)
-	{}
+  CLifespan(int total) : total(total), remaining(total) {}
 };

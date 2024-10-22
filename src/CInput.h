@@ -1,14 +1,13 @@
 #pragma once
 
-class CInput
-{
+class CInput {
 public:
-	bool up = false;
-	bool left = false;
-	bool right = false;
-	bool down = false;
-	
-	bool shoot = false;
+  bool up = false;
+  bool left = false;
+  bool right = false;
+  bool down = false;
 
-	CInput() {}
+  bool shoot = false;
+
+  CInput() {}
 };
