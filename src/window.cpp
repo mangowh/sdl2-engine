@@ -152,8 +152,8 @@ void Window::drawPoint(int x, int y, SDL_Color color) const {
   SDL_RenderDrawPoint(renderer, x, y);
 }
 
-void Window::drawRect(int x, int y, int width, int height,
-                      SDL_Color color) const {
+void Window::drawRect(int x, int y, int width, int height, SDL_Color color,
+                      bool fill) const {
   SDL_Rect r;
   r.x = x;
   r.y = y;
@@ -162,7 +162,11 @@ void Window::drawRect(int x, int y, int width, int height,
 
   SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
 
-  SDL_RenderFillRect(renderer, &r);
+  if (fill) {
+    SDL_RenderFillRect(renderer, &r);
+  } else {
+    SDL_RenderDrawRect(renderer, &r);
+  }
 }
 
 void Window::drawTriangle(Vector2 v1, Vector2 v2, Vector2 v3,
@@ -201,19 +205,29 @@ void Window::drawCircle(Vector2 center, float radius, SDL_Color color,
 }
 
 void Window::drawDebug(std::shared_ptr<Entity> e) const {
+  const SDL_Color transformDebugColor = {255, 30, 40};
+  const SDL_Color collisionDebugColor = {15, 30, 240};
+
   if (e->cTransform) {
     const auto pos = e->cTransform->pos;
 
-    drawRect(pos.x - 3, pos.y - 3, 6, 6, {255, 30, 40});
+    drawRect(pos.x - 3, pos.y - 3, 6, 6, transformDebugColor);
 
-    drawRect(pos.x - 3, pos.y - 3, 6, 6, {255, 30, 40});
+    drawRect(pos.x - 3, pos.y - 3, 6, 6, transformDebugColor);
   }
 
   if (e->cCollision) {
     const auto pos = e->cCollision->center;
+    drawRect(pos.x - 3, pos.y - 3, 6, 6, collisionDebugColor);
 
-    drawRect(pos.x - 3, pos.y - 3, 6, 6, {15, 30, 240});
-    drawCircle(pos, e->cCollision->radius, {15, 230, 240});
+    if (e->cCollision->shape == ColliderShape::circle) {
+      drawCircle(pos, e->cCollision->radius, collisionDebugColor);
+    } else {
+      drawRect(e->cCollision->p1.x, e->cCollision->p1.y,
+               e->cCollision->p2.x - e->cCollision->p1.x,
+               e->cCollision->p2.y - e->cCollision->p1.y, collisionDebugColor,
+               false);
+    }
   }
 }
 

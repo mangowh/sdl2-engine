@@ -11,7 +11,7 @@
 #include <memory>
 #include <string>
 
-enum class EntityType { player, enemy, projectile };
+enum class EntityType { player, enemy, projectile, boundary };
 
 class Entity {
   const int m_id = 0;

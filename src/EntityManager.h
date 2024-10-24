@@ -26,7 +26,6 @@ public:
   void update();
 
   std::shared_ptr<Entity> addEntity(const EntityType tag);
-  std::shared_ptr<Entity> scheduleAddEntity(const EntityType tag);
   EntityVec &getEntities();
   EntityVec &getEntities(EntityType tag);
 

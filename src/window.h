@@ -62,7 +62,8 @@ public:
   void drawShape(std::shared_ptr<CTransform> transform,
                  std::shared_ptr<CShape> shape) const;
   void drawPoint(int x, int y, SDL_Color color) const;
-  void drawRect(int x, int y, int width, int height, SDL_Color color) const;
+  void drawRect(int x, int y, int width, int height, SDL_Color color,
+                bool fill = true) const;
   void drawTriangle(Vector2 v1, Vector2 v2, Vector2 v3, SDL_Color color) const;
   void drawCircle(Vector2 center, float radius, SDL_Color color,
                   int numSegments) const;

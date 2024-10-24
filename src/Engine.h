@@ -23,6 +23,9 @@ class Engine {
   void sEnemySpawner();
   void sRender();
 
+  bool checkCollision(std::shared_ptr<CCollision> c1,
+                      std::shared_ptr<CCollision> c2);
+
   // font & text
 
   std::shared_ptr<Entity> player;
@@ -42,6 +45,7 @@ public:
   void run();
   void pause();
 
+  void setWorldBoundaries();
   void spawnPlayer();
   void spawnEnemy();
   void spawnProjectile(Vector2 direction);

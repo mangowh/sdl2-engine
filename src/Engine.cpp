@@ -24,14 +24,47 @@ void Engine::init() {
 
   window.onRightClick = [&](Vector2 coords) { specialMove(coords); };
 
+  setWorldBoundaries();
+
   spawnPlayer();
 
-  { window.open(); }
+  window.open();
 }
 
 void Engine::run() { paused = false; }
 
 void Engine::pause() { paused = true; }
+
+void Engine::setWorldBoundaries() {
+  const float boundarySize = 10.0;
+
+  const float windowW = (float)window.getWidth();
+  const float windowH = (float)window.getHeight();
+
+  const auto topBoundary = entityManager.addEntity(EntityType::boundary);
+  topBoundary->cTransform =
+      std::make_shared<CTransform>(Vector2({0, -boundarySize}));
+  topBoundary->cCollision = std::make_shared<CCollision>(
+      Vector2({0, -boundarySize}), Vector2({windowW, 0}));
+
+  const auto rightBoundary = entityManager.addEntity(EntityType::boundary);
+  rightBoundary->cTransform =
+      std::make_shared<CTransform>(Vector2({windowW, 0}));
+  rightBoundary->cCollision = std::make_shared<CCollision>(
+      Vector2({windowW, 0}), Vector2({windowW + boundarySize, windowH}));
+
+  const auto bottomBoundary = entityManager.addEntity(EntityType::boundary);
+  bottomBoundary->cTransform =
+      std::make_shared<CTransform>(Vector2({0, windowH}));
+  bottomBoundary->cCollision = std::make_shared<CCollision>(
+      Vector2({0, windowH}), Vector2({windowW, windowH + boundarySize}));
+
+  const auto leftBoundary = entityManager.addEntity(EntityType::boundary);
+  leftBoundary->cTransform =
+      std::make_shared<CTransform>(Vector2({-boundarySize, 0}));
+  leftBoundary->cCollision = std::make_shared<CCollision>(
+      Vector2({-boundarySize, 0}), Vector2({0, windowH}));
+}
 
 void Engine::spawnPlayer() {
   Vector2 centerOfScreen = {(window.getWidth() - 100) / 2.0f,
@@ -41,7 +74,7 @@ void Engine::spawnPlayer() {
   player->cTransform = std::make_shared<CTransform>(centerOfScreen);
   player->cShape = std::make_shared<CShape>(CShape(100, 100, {255, 100, 0}));
   player->cCollision =
-      std::make_shared<CCollision>(centerOfScreen + 50, 100 / 2.0f);
+      std::make_shared<CCollision>(centerOfScreen, centerOfScreen + 100);
 }
 
 void Engine::spawnEnemy() {
@@ -59,7 +92,7 @@ void Engine::spawnEnemy() {
       50, 50,
       {(uint8_t)rand.genRandomInt(0, 255), (uint8_t)rand.genRandomInt(0, 255),
        (uint8_t)rand.genRandomInt(0, 255)}));
-  enemy->cCollision = std::make_shared<CCollision>(pos + 50 / 2.0f, 50 / 2.0f);
+  enemy->cCollision = std::make_shared<CCollision>(pos, pos + 50);
 }
 
 void Engine::spawnProjectile(Vector2 direction) {
@@ -68,16 +101,12 @@ void Engine::spawnProjectile(Vector2 direction) {
   auto playerPosition = player->cTransform->pos;
 
   Vector2 playerCenter =
-      Vector2(playerPosition.x + 100 / 2, playerPosition.y + 100 / 2.0f);
+      Vector2(playerPosition.x + 100 / 2.0f, playerPosition.y + 100 / 2.0f);
   auto directionFromPlayer = direction - playerCenter;
 
   auto projectile = entityManager.addEntity(EntityType::projectile);
   projectile->cTransform = std::make_shared<CTransform>(
       CTransform(playerCenter, directionFromPlayer.normalized() * 20));
-
-  const Color randomColor = {(uint8_t)rand.genRandomInt(0, 255),
-                             (uint8_t)rand.genRandomInt(0, 255),
-                             (uint8_t)rand.genRandomInt(0, 255)};
 
   const int dimension = 50;
 
@@ -85,10 +114,13 @@ void Engine::spawnProjectile(Vector2 direction) {
   Vector2 v2 = Vector2(playerCenter.x, playerCenter.y + dimension);
   Vector2 v3 = Vector2(playerCenter.x + dimension, playerCenter.y + dimension);
 
-  v1 -= dimension / 2;
-  v2 -= dimension / 2;
-  v3 -= dimension / 2;
+  v1 -= dimension / 2.0f;
+  v2 -= dimension / 2.0f;
+  v3 -= dimension / 2.0f;
 
+  const Color randomColor = {(uint8_t)rand.genRandomInt(0, 255),
+                             (uint8_t)rand.genRandomInt(0, 255),
+                             (uint8_t)rand.genRandomInt(0, 255)};
   projectile->cShape =
       std::make_shared<CShape>(CShape(v1, v2, v3, randomColor));
   projectile->cCollision =
@@ -115,17 +147,26 @@ void Engine::specialMove(Vector2 position) {
 void Engine::sMovement() {
   for (auto &e : entityManager.getEntities()) {
     if (e->cTransform) {
+      e->cTransform->prevPos = e->cTransform->pos;
+
       e->cTransform->pos.x += e->cTransform->velocity.x;
       e->cTransform->pos.y += e->cTransform->velocity.y;
 
       if (e->cShape) {
         // translate triangles
-        for (auto &v : e->cShape->verts) {
-          v += e->cTransform->velocity;
+        if (e->cShape->type == ShapeType::triangle) {
+          for (auto &v : e->cShape->verts) {
+            v += e->cTransform->velocity;
+          }
         }
       }
 
       if (e->cCollision) {
+        if (e->cCollision->shape == ColliderShape::rect) {
+          e->cCollision->p1 += e->cTransform->velocity;
+          e->cCollision->p2 += e->cTransform->velocity;
+        }
+
         e->cCollision->center.x += e->cTransform->velocity.x;
         e->cCollision->center.y += e->cTransform->velocity.y;
       }
@@ -134,86 +175,79 @@ void Engine::sMovement() {
 }
 
 void Engine::sCollision() {
-  for (auto &e : entityManager.getEntities()) {
-    if (e->cCollision && e->cTransform)
+  const auto &entities = entityManager.getEntities();
 
-      // Screen border collision
-      if (e->tag() == EntityType::player) {
-        if (e->cCollision->center.x - e->cCollision->radius < 0 &&
-            e->cTransform->velocity.x < 0) {
-          e->cTransform->velocity.x = 0.0f;
-        }
+  for (auto &e1 : entities) {
+    for (auto &e2 : entities) {
+      if ((e1->cTransform && e1->cCollision) &&
+          (e2->cTransform && e2->cCollision)) {
+        if (e1->id() != e2->id()) {
+          // Player / Projectile collision
+          if (e1->tag() == EntityType::player &&
+              e2->tag() == EntityType::enemy) {
+            const auto &enemy = e2;
+            const auto collision =
+                checkCollision(e1->cCollision, e2->cCollision);
 
-        const int windowW = window.getWidth();
-        if (e->cCollision->center.x + e->cCollision->radius > windowW &&
-            e->cTransform->velocity.x > 0) {
-          e->cTransform->velocity.x = 0.0f;
-        }
+            if (collision) {
+              enemy->destroy();
+              player->destroy();
 
-        if (e->cCollision->center.y - e->cCollision->radius < 0 &&
-            e->cTransform->velocity.y < 0) {
-          e->cTransform->velocity.y = 0.0f;
-        }
+              spawnPlayer();
+              break;
+            }
+          }
 
-        const int windowH = window.getHeight();
-        if (e->cCollision->center.y + e->cCollision->radius > windowH &&
-            e->cTransform->velocity.y > 0) {
-          e->cTransform->velocity.y = 0.0f;
-        }
-      }
+          // Projectile / Enemy collision
+          if (e1->tag() == EntityType::projectile &&
+              e2->tag() == EntityType::enemy) {
+            const auto collision =
+                checkCollision(e1->cCollision, e2->cCollision);
 
-    // Enemy bouncing
-    if (e->tag() == EntityType::enemy) {
-      if (e->cCollision->center.x - e->cCollision->radius < 0 &&
-          e->cTransform->velocity.x < 0) {
-        e->cTransform->velocity.x = -e->cTransform->velocity.x;
-      }
+            if (collision) {
+              e2->destroy();
+            }
+          }
 
-      const int windowW = window.getWidth();
-      if (e->cCollision->center.x + e->cCollision->radius > windowW &&
-          e->cTransform->velocity.x > 0) {
-        e->cTransform->velocity.x = -e->cTransform->velocity.x;
-      }
+          // Boundary collision
+          if (e1->tag() == EntityType::boundary &&
+              e2->tag() != EntityType::boundary) {
+            const auto collision =
+                checkCollision(e1->cCollision, e2->cCollision);
 
-      if (e->cCollision->center.y - e->cCollision->radius < 0 &&
-          e->cTransform->velocity.y < 0) {
-        e->cTransform->velocity.y = -e->cTransform->velocity.y;
-      }
-
-      const int windowH = window.getHeight();
-      if (e->cCollision->center.y + e->cCollision->radius > windowH &&
-          e->cTransform->velocity.y > 0) {
-        e->cTransform->velocity.y = -e->cTransform->velocity.y;
-      }
-    }
-
-    // Projectile / Enemy collision
-    if (e->tag() == EntityType::projectile) {
-      const auto projCollider = e->cCollision;
-
-      for (auto &enemy : entityManager.getEntities(EntityType::enemy)) {
-        const auto enemyCollider = enemy->cCollision;
-
-        if ((projCollider->center - enemyCollider->center).magnitude() <
-            projCollider->radius + enemyCollider->radius) {
-          enemy->destroy();
-        }
-      }
-    }
-
-    // Player / Projectile collsion
-    if (e->tag() == EntityType::player) {
-      const auto playerCollider = e->cCollision;
-
-      for (auto &enemy : entityManager.getEntities(EntityType::enemy)) {
-        const auto enemyCollider = enemy->cCollision;
-
-        if ((playerCollider->center - enemyCollider->center).magnitude() <
-            playerCollider->radius + enemyCollider->radius) {
-          enemy->destroy();
-          player->destroy();
-          spawnPlayer();
-          break;
+            if (collision) {
+              // todo rework
+              if (e1->cCollision->center.x < e2->cTransform->prevPos.x &&
+                  e2->cTransform->velocity.x < 0) {
+                if (e2->tag() == EntityType::enemy) {
+                  e2->cTransform->velocity.x = -e2->cTransform->velocity.x;
+                } else {
+                  e2->cTransform->velocity.x = 0;
+                }
+              } else if (e1->cCollision->center.x > e2->cTransform->prevPos.x &&
+                         e2->cTransform->velocity.x > 0) {
+                if (e2->tag() == EntityType::enemy) {
+                  e2->cTransform->velocity.x = -e2->cTransform->velocity.x;
+                } else {
+                  e2->cTransform->velocity.x = 0;
+                }
+              } else if (e1->cCollision->center.y < e2->cTransform->prevPos.y &&
+                         e2->cTransform->velocity.y < 0) {
+                if (e2->tag() == EntityType::enemy) {
+                  e2->cTransform->velocity.y = -e2->cTransform->velocity.y;
+                } else {
+                  e2->cTransform->velocity.y = 0;
+                }
+              } else if (e1->cCollision->center.y > e2->cTransform->prevPos.y &&
+                         e2->cTransform->velocity.y > 0) {
+                if (e2->tag() == EntityType::enemy) {
+                  e2->cTransform->velocity.y = -e2->cTransform->velocity.y;
+                } else {
+                  e2->cTransform->velocity.y = 0;
+                }
+              }
+            }
+          }
         }
       }
     }
@@ -281,7 +315,6 @@ void Engine::sRender() {
   window.clear();
 
   for (auto &e : entityManager.getEntities()) {
-
     if (e->cTransform && e->cShape) {
       window.drawShape(e->cTransform, e->cShape);
     }
@@ -290,4 +323,76 @@ void Engine::sRender() {
   }
 
   window.render();
+}
+
+/**
+https://www.jeffreythompson.org/collision-detection/table_of_contents.php
+*/
+bool Engine::checkCollision(std::shared_ptr<CCollision> c1,
+                            std::shared_ptr<CCollision> c2) {
+  if (c1->shape == ColliderShape::circle && c2->shape == ColliderShape::rect) {
+
+    // https://www.jeffreythompson.org/collision-detection/circle-rect.php
+    const float cx = c1->center.x;
+    const float cy = c1->center.y;
+    const float radius = c1->radius;
+    const float rx = c2->p1.x;
+    const float ry = c2->p1.y;
+    const float rw = c2->p2.x - c2->p1.x;
+    const float rh = c2->p2.y - c2->p1.y;
+
+    // temporary variables to set edges for testing
+    float testX = cx;
+    float testY = cy;
+
+    // which edge is closest?
+    if (cx < rx)
+      testX = rx; // test left edge
+    else if (cx > rx + rw)
+      testX = rx + rw; // right edge
+    if (cy < ry)
+      testY = ry; // top edge
+    else if (cy > ry + rh)
+      testY = ry + rh; // bottom edge
+
+    // get distance from closest edges
+    float distX = cx - testX;
+    float distY = cy - testY;
+    float distance = sqrt((distX * distX) + (distY * distY));
+
+    // if the distance is less than the radius, collision!
+    if (distance <= radius) {
+      return true;
+    }
+    return false;
+  }
+
+  if (c1->shape == ColliderShape::rect && c2->shape == ColliderShape::rect) {
+
+    float r1x = c1->p1.x;
+    float r1y = c1->p1.y;
+    float r1w = c1->w();
+    float r1h = c1->h();
+    float r2x = c2->p1.x;
+    float r2y = c2->p1.y;
+    float r2w = c2->w();
+    float r2h = c2->h();
+
+    // are the sides of one rectangle touching the other?
+
+    if (r1x + r1w >= r2x && // r1 right edge past r2 left
+        r1x <= r2x + r2w && // r1 left edge past r2 right
+        r1y + r1h >= r2y && // r1 top edge past r2 bottom
+        r1y <= r2y + r2h) { // r1 bottom edge past r2 top
+      return true;
+    }
+    return false;
+  }
+
+  if (c1->shape == ColliderShape::circle &&
+      c2->shape == ColliderShape::circle) {
+    return ((c1->center - c2->center).magnitude() < c1->radius + c2->radius);
+  }
+
+  return false;
 }
