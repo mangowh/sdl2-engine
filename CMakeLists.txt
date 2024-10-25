@@ -18,7 +18,7 @@ find_package(sol2 CONFIG REQUIRED)
 find_package(yaml-cpp CONFIG REQUIRED)
 
 # Add source to this project's executable.
-add_executable (CMakeProject1 "src/main.cpp"    "src/Window.cpp" "src/Window.h" "src/CShape.h"  "src/EntityManager.h" "src/EntityManager.cpp" "src/Entity.h" "src/Entity.cpp"  "src/Engine.h" "src/Engine.cpp" "src/Vector2.cpp" "src/Vector2.h" "src/CTransform.h"  "src/Color.h" "src/CCollision.h" "src/CScore.h" "src/CLifespan.h" "src/CInput.h" "src/Random.h"  )
+add_executable (CMakeProject1 "src/main.cpp"    "src/Window.cpp" "src/Window.h" "src/CShape.h"  "src/EntityManager.h" "src/EntityManager.cpp" "src/Entity.h" "src/Entity.cpp"  "src/Engine.h" "src/Engine.cpp" "src/Vector2.cpp" "src/Vector2.h" "src/CTransform.h"  "src/Color.h" "src/CCollision.h" "src/CScore.h" "src/CLifespan.h" "src/CInput.h" "src/Random.h"   "src/GameEngine.h" "src/Scene.h" "src/Assets.h")
 
 target_link_libraries(CMakeProject1
     PRIVATE
