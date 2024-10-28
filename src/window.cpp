@@ -3,40 +3,46 @@
 const int TARGET_FPS = 60;
 const int FRAME_DELAY = 1000 / TARGET_FPS; // Frame delay in milliseconds
 
-Window::Window() { init(); }
-
-Window::~Window() { close(); }
-
-void Window::init() {
+Window::Window() {
   // Initialize SDL
   if (SDL_Init(SDL_INIT_VIDEO) < 0) {
     printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
-  } else {
-    // Create window
-    window = SDL_CreateWindow(windowTitle.c_str(), SDL_WINDOWPOS_UNDEFINED,
-                              SDL_WINDOWPOS_UNDEFINED, screenWidth,
-                              screenHeight, SDL_WINDOW_SHOWN);
+    return;
+  }
 
-    if (window == NULL) {
-      printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
-    } else {
-      renderer = SDL_CreateRenderer(
-          window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-    }
+  // Initialize SDL_image
+  if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG)) {
+    std::cerr << "IMG_Init Error: " << IMG_GetError() << std::endl;
+    return;
+  }
+
+  // Create window
+  sdlWindow = SDL_CreateWindow(windowTitle.c_str(), SDL_WINDOWPOS_UNDEFINED,
+                               SDL_WINDOWPOS_UNDEFINED, screenWidth,
+                               screenHeight, SDL_WINDOW_SHOWN);
+
+  if (sdlWindow == NULL) {
+    printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
+    return;
+  }
+
+  renderer = SDL_CreateRenderer(
+      sdlWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+
+  if (renderer == NULL) {
+    printf("Could not create renderer! SDL_Error: %s\n", SDL_GetError());
+    return;
   }
 }
 
-void Window::open() {
-  while (!shouldQuit) {
-    mainLoop();
-  }
-}
+Window::~Window() { close(); }
 
 void Window::mainLoop() {
   Uint32 frameStart = SDL_GetTicks(); // Start time for frame
 
   // Handle events on queue
-  auto event = pollEvent();
+  SDL_Event event;
+  SDL_PollEvent(&event);
 
   // User requests quit
   if (event.type == SDL_QUIT ||
@@ -65,7 +71,9 @@ void Window::mainLoop() {
   // Get the keyboard state
   keyboardState = SDL_GetKeyboardState(NULL);
 
-  update();
+  for (auto &func : getC()) {
+    func();
+  }
 
   // Calculate frame time and delay to maintain fixed FPS
   Uint32 frameTime = SDL_GetTicks() - frameStart;
@@ -75,22 +83,9 @@ void Window::mainLoop() {
   }
 }
 
-SDL_Event Window::pollEvent() {
-  SDL_Event event;
-  while (SDL_PollEvent(&event) != 0) {
-    return event;
-  }
-}
-
 void Window::addCallback(std::function<void(void)> func) {
   // TODO prevent adding while iterating
   frameCallbacks.push_back(func);
-}
-
-void Window::update() const {
-  for (auto &func : frameCallbacks) {
-    func();
-  }
 }
 
 void Window::clear() const {
@@ -100,10 +95,12 @@ void Window::clear() const {
 
 void Window::close() {
   // Destroy window
-  if (window) {
-    SDL_DestroyWindow(window);
-    window = NULL;
+  if (sdlWindow) {
+    SDL_DestroyWindow(sdlWindow);
+    sdlWindow = NULL;
   }
+
+  IMG_Quit();
 
   // Quit SDL subsystems
   SDL_Quit();
@@ -128,7 +125,7 @@ int Window::getHeight() const {
 }
 
 void Window::setFullscreen() const {
-  SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
+  SDL_SetWindowFullscreen(sdlWindow, SDL_WINDOW_FULLSCREEN);
 }
 
 void Window::drawShape(std::shared_ptr<CTransform> transform,
@@ -281,5 +278,5 @@ void Window::renderGL() const {
   glEnd();
   // ! END EXAMPLE CUBE
 
-  SDL_GL_SwapWindow(window);
+  SDL_GL_SwapWindow(sdlWindow);
 }

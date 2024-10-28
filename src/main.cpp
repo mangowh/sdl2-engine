@@ -1,4 +1,4 @@
-﻿#define SDL_MAIN_HANDLED // see SDL_MainReady documentation
+#define SDL_MAIN_HANDLED // see SDL_MainReady documentation
 
 #define SOL_ALL_SAFETIES_ON 1
 
@@ -12,7 +12,7 @@
 #include <sol/sol.hpp>
 #include <yaml-cpp/yaml.h>
 
-void printException(std::runtime_error e) {
+static void printException(std::runtime_error e) {
   std::cerr << __FILE__ << ":" << __LINE__ << "\n" << "Error" << std::endl;
   std::cerr << e.what() << std::endl;
 }
@@ -45,7 +45,7 @@ int main(int argc, char *argv[]) {
     std::cerr << e.what() << std::endl;
   }
 
-  Engine engine{config};
+  Engine engine(config);
   engine.run();
 
   return EXIT_SUCCESS;

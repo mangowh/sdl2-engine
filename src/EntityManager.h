@@ -1,5 +1,4 @@
-#ifndef ENTITY_MANAGER_H
-#define ENTITY_MANAGER_H
+#pragma once
 
 #include "Entity.h"
 
@@ -31,5 +30,3 @@ public:
 
   void removeEntity(std::shared_ptr<Entity> e);
 };
-
-#endif // ENTITY_MANAGER_H

@@ -4,6 +4,7 @@
     "opengl",
     "sdl2",
     "sol2",
-    "yaml-cpp"
+    "yaml-cpp",
+    "sdl2-image"
   ]
 }

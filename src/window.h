@@ -1,9 +1,9 @@
-#ifndef WINDOW_H
-#define WINDOW_H
+#pragma once
 
 #include "CShape.h"
 #include "CTransform.h"
 #include "Entity.h"
+#include "sdl/Texture.h"
 
 #include <cmath>
 #include <functional>
@@ -11,11 +11,11 @@
 #include <memory>
 #include <vector>
 
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_opengl.h>
+#include <SDL.h>
+#include <SDL_image.h>
+#include <SDL_opengl.h>
 
 class Window {
-  bool shouldQuit = false;
 
   /* Window title */
   const std::string windowTitle = "test";
@@ -24,7 +24,7 @@ class Window {
   /* Screen height */
   const int screenHeight = 1080;
   /* The window object to render to */
-  SDL_Window *window = NULL;
+  SDL_Window *sdlWindow = NULL;
   /* The surface contained by the window */
   SDL_Surface *surface = NULL;
   SDL_Renderer *renderer = NULL;
@@ -32,20 +32,22 @@ class Window {
   SDL_Event pollEvent();
   std::vector<std::function<void(void)>> frameCallbacks = {};
 
-  void mainLoop();
+  std::vector<std::function<void(void)>> &getC() { return frameCallbacks; }
 
 public:
   Window();
   ~Window();
 
+  void mainLoop();
+  bool shouldQuit = false;
+
   const Uint8 *keyboardState;
 
-  void init();
-  void open();
   void addCallback(std::function<void(void)> func);
-  void update() const;
   void clear() const;
   void close();
+
+  Texture loadImage(std::string path);
 
   void render() const;
 
@@ -74,5 +76,3 @@ public:
   void initGL();
   void renderGL() const;
 };
-
-#endif // WINDOW_H
