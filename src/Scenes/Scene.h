@@ -2,7 +2,7 @@
 
 #include "../Camera.h"
 #include "../EntityManager.h"
-#include "../sdl/Action.h"
+#include "../Action.h"
 
 class Scene {
 public:

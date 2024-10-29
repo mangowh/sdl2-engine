@@ -1,7 +1,7 @@
 #include "Engine.h"
 
 Engine::Engine(Config config) {
-  currentScene = std::make_shared<GeometryWarsScene>(window);
+  currentScene = std::make_shared<MenuScene>(window);
 
   currentScene->init();
 
@@ -13,29 +13,33 @@ Engine::Engine(Config config) {
     currentFrame++;
   });
 
-  while (!window.shouldQuit) {
-    window.mainLoop();
-  }
-}
+  actionManager.registerSubscriber(ActionName::confirm, [&](Action action) {
+    currentScene = std::make_shared<GeometryWarsScene>(window);
+  });
 
-void Engine::run() { paused = false; }
-
-void Engine::pause() { paused = true; }
-
-void Engine::sUserInput() {
-  // TODO remove SDL references in Engine
-
-  auto keyboardState = window.keyboardState;
-
-  // Pause
-  // TODO use SDL_Event pool for
-  if (keyboardState[SDL_SCANCODE_P]) {
+  actionManager.registerSubscriber(ActionName::togglePause, [&](Action action) {
     if (!paused) {
       pause();
     } else {
       run();
     }
+  });
+}
+
+void Engine::run() {
+  while (!window.shouldQuit) {
+    if (!paused) {
+      window.mainLoop();
+    }
   }
+}
+
+void Engine::resume() { paused = false; }
+
+void Engine::pause() { paused = true; }
+
+void Engine::sUserInput() {
+  auto keyboardState = window.keyboardState;
 
   // Fullscreen
   // TODO use SDL_Event pool for

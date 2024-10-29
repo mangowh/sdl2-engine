@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Action.h"
 #include "CShape.h"
 #include "CTransform.h"
 #include "Entity.h"
@@ -11,6 +12,7 @@
 #include <memory>
 #include <vector>
 
+#include "ActionManager.h"
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_opengl.h>
@@ -28,14 +30,15 @@ class Window {
   /* The surface contained by the window */
   SDL_Surface *surface = NULL;
   SDL_Renderer *renderer = NULL;
-  /* Event handler */
-  SDL_Event pollEvent();
-  std::vector<std::function<void(void)>> frameCallbacks = {};
 
-  std::vector<std::function<void(void)>> &getC() { return frameCallbacks; }
+  std::vector<std::function<void()>> frameCallbacks = {};
+
+  /* Event handler */
+  void handleEvents();
+  ActionManager &actionManager;
 
 public:
-  Window();
+  Window(ActionManager &actionManager);
   ~Window();
 
   void mainLoop();

@@ -1,8 +1,8 @@
 #pragma once
 
+#include "./Scenes/Scene.h"
 #include "Assets.h"
-#include "Scene.h"
-#include "window.h"
+#include "Window.h"
 
 #include <map>
 #include <string>

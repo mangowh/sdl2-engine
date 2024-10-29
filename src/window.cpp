@@ -3,7 +3,7 @@
 const int TARGET_FPS = 60;
 const int FRAME_DELAY = 1000 / TARGET_FPS; // Frame delay in milliseconds
 
-Window::Window() {
+Window::Window(ActionManager &actionManager) : actionManager(actionManager) {
   // Initialize SDL
   if (SDL_Init(SDL_INIT_VIDEO) < 0) {
     printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
@@ -40,38 +40,12 @@ Window::~Window() { close(); }
 void Window::mainLoop() {
   Uint32 frameStart = SDL_GetTicks(); // Start time for frame
 
-  // Handle events on queue
-  SDL_Event event;
-  SDL_PollEvent(&event);
-
-  // User requests quit
-  if (event.type == SDL_QUIT ||
-      (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)) {
-    shouldQuit = true;
-  }
-
-  if (onClick && event.type == SDL_MOUSEBUTTONDOWN &&
-      event.button.button == SDL_BUTTON_LEFT) {
-    int x, y;
-    Uint32 buttons = SDL_GetMouseState(&x, &y);
-
-    Vector2 coords = Vector2((float)x, (float)y);
-    onClick(coords);
-  }
-
-  if (onRightClick && event.type == SDL_MOUSEBUTTONDOWN &&
-      event.button.button == SDL_BUTTON_RIGHT) {
-    int x, y;
-    Uint32 buttons = SDL_GetMouseState(&x, &y);
-
-    Vector2 coords = Vector2((float)x, (float)y);
-    onRightClick(coords);
-  }
+  handleEvents();
 
   // Get the keyboard state
   keyboardState = SDL_GetKeyboardState(NULL);
 
-  for (auto &func : getC()) {
+  for (auto &func : frameCallbacks) {
     func();
   }
 
@@ -104,6 +78,76 @@ void Window::close() {
 
   // Quit SDL subsystems
   SDL_Quit();
+}
+
+void Window::handleEvents() {
+  // Handle events on queue
+  SDL_Event event;
+  SDL_PollEvent(&event);
+
+  // User requests quit
+  if (event.type == SDL_QUIT ||
+      (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)) {
+    shouldQuit = true;
+  }
+
+  if (onClick && event.type == SDL_MOUSEBUTTONDOWN &&
+      event.button.button == SDL_BUTTON_LEFT) {
+    int x, y;
+    Uint32 buttons = SDL_GetMouseState(&x, &y);
+
+    Vector2 coords = Vector2((float)x, (float)y);
+    onClick(coords);
+  }
+
+  if (onRightClick && event.type == SDL_MOUSEBUTTONDOWN &&
+      event.button.button == SDL_BUTTON_RIGHT) {
+    int x, y;
+    Uint32 buttons = SDL_GetMouseState(&x, &y);
+
+    Vector2 coords = Vector2((float)x, (float)y);
+    onRightClick(coords);
+  }
+
+  if (event.type == SDL_KEYDOWN) {
+    switch (event.key.keysym.sym) {
+    case (SDLK_a): {
+      actionManager.dispatchAction(ActionName::left, ActionType::start);
+
+      break;
+    }
+
+    case (SDLK_w): {
+      actionManager.dispatchAction(ActionName::top, ActionType::start);
+
+      break;
+    }
+
+    case (SDLK_d): {
+      actionManager.dispatchAction(ActionName::right, ActionType::start);
+
+      break;
+    }
+
+    case (SDLK_b): {
+      actionManager.dispatchAction(ActionName::bottom, ActionType::start);
+
+      break;
+    }
+
+    case (SDLK_SPACE): {
+      actionManager.dispatchAction(ActionName::confirm, ActionType::start);
+
+      break;
+    }
+
+    case (SDLK_p): {
+      actionManager.dispatchAction(ActionName::togglePause, ActionType::start);
+
+      break;
+    }
+    }
+  }
 }
 
 void Window::render() const { SDL_RenderPresent(renderer); }
