@@ -5,8 +5,11 @@ Window window;
 SceneManager sceneManager;
 
 Engine::Engine(Config config) {
-  sceneManager.sceneMap.push_back(std::make_shared<MenuScene>());
-  sceneManager.sceneMap.push_back(std::make_shared<GeometryWarsScene>());
+  sceneManager.sceneMap.push_back(std::make_shared<MenuScene>()); // 0
+
+  sceneManager.sceneMap.push_back(std::make_shared<GeometryWarsScene>()); // 1
+  sceneManager.sceneMap.push_back(std::make_shared<MegamarioScene>()); // 2
+  //sceneManager.sceneMap.push_back(std::make_shared<S>()) ; // 3
 
   sceneManager.setCurrentScene(0);
 
