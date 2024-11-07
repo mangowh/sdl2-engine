@@ -1,6 +1,8 @@
 #include "GeometryWarsScene.h"
 
-GeometryWarsScene::GeometryWarsScene(Window &window) : window(window) {
+GeometryWarsScene::GeometryWarsScene() {}
+
+void GeometryWarsScene::init() {
   setWorldBoundaries();
 
   spawnPlayer();
@@ -8,9 +10,11 @@ GeometryWarsScene::GeometryWarsScene(Window &window) : window(window) {
   window.onClick = [&](Vector2 coords) { spawnProjectile(coords); };
 
   window.onRightClick = [&](Vector2 coords) { specialMove(coords); };
-}
 
-void GeometryWarsScene::init() {}
+  actionManager.registerSubscriber(ActionName::esc, [&](Action action) {
+    // TODO go back
+  });
+}
 
 void GeometryWarsScene::update() {
   entityManager.update();
@@ -51,10 +55,10 @@ void GeometryWarsScene::sUserInput() {
 void GeometryWarsScene::sMovement() {
   for (auto &e : entityManager.getEntities()) {
     if (e->cTransform) {
-      e->cTransform->prevPos = e->cTransform->pos;
+      e->cTransform->previousPosition = e->cTransform->position;
 
-      e->cTransform->pos.x += e->cTransform->velocity.x;
-      e->cTransform->pos.y += e->cTransform->velocity.y;
+      e->cTransform->position.x += e->cTransform->velocity.x;
+      e->cTransform->position.y += e->cTransform->velocity.y;
 
       if (e->cShape) {
         // translate triangles
@@ -121,28 +125,32 @@ void GeometryWarsScene::sCollision() {
 
             if (collision) {
               // todo rework
-              if (e1->cCollision->center.x < e2->cTransform->prevPos.x &&
+              if (e1->cCollision->center.x <
+                      e2->cTransform->previousPosition.x &&
                   e2->cTransform->velocity.x < 0) {
                 if (e2->tag() == EntityType::enemy) {
                   e2->cTransform->velocity.x = -e2->cTransform->velocity.x;
                 } else {
                   e2->cTransform->velocity.x = 0;
                 }
-              } else if (e1->cCollision->center.x > e2->cTransform->prevPos.x &&
+              } else if (e1->cCollision->center.x >
+                             e2->cTransform->previousPosition.x &&
                          e2->cTransform->velocity.x > 0) {
                 if (e2->tag() == EntityType::enemy) {
                   e2->cTransform->velocity.x = -e2->cTransform->velocity.x;
                 } else {
                   e2->cTransform->velocity.x = 0;
                 }
-              } else if (e1->cCollision->center.y < e2->cTransform->prevPos.y &&
+              } else if (e1->cCollision->center.y <
+                             e2->cTransform->previousPosition.y &&
                          e2->cTransform->velocity.y < 0) {
                 if (e2->tag() == EntityType::enemy) {
                   e2->cTransform->velocity.y = -e2->cTransform->velocity.y;
                 } else {
                   e2->cTransform->velocity.y = 0;
                 }
-              } else if (e1->cCollision->center.y > e2->cTransform->prevPos.y &&
+              } else if (e1->cCollision->center.y >
+                             e2->cTransform->previousPosition.y &&
                          e2->cTransform->velocity.y > 0) {
                 if (e2->tag() == EntityType::enemy) {
                   e2->cTransform->velocity.y = -e2->cTransform->velocity.y;
@@ -325,7 +333,7 @@ void GeometryWarsScene::spawnEnemy() {
 void GeometryWarsScene::spawnProjectile(Vector2 direction) {
   Random rand;
 
-  auto playerPosition = player->cTransform->pos;
+  auto playerPosition = player->cTransform->position;
 
   Vector2 playerCenter =
       Vector2(playerPosition.x + 100 / 2.0f, playerPosition.y + 100 / 2.0f);

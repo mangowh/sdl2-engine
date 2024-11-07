@@ -1,20 +1,21 @@
 #include "Engine.h"
 
+ActionManager actionManager;
+Window window;
+SceneManager sceneManager;
+
 Engine::Engine(Config config) {
-  currentScene = std::make_shared<MenuScene>(window);
+  sceneManager.sceneMap.push_back(std::make_shared<MenuScene>());
+  sceneManager.sceneMap.push_back(std::make_shared<GeometryWarsScene>());
 
-  currentScene->init();
+  sceneManager.setCurrentScene(0);
 
-  window.addCallback([this]() {
+  window.addCallback([&]() {
     sUserInput();
 
-    currentScene->update();
+    sceneManager.getCurrentScene()->update();
 
     currentFrame++;
-  });
-
-  actionManager.registerSubscriber(ActionName::confirm, [&](Action action) {
-    currentScene = std::make_shared<GeometryWarsScene>(window);
   });
 
   actionManager.registerSubscriber(ActionName::togglePause, [&](Action action) {
@@ -26,7 +27,7 @@ Engine::Engine(Config config) {
   });
 }
 
-void Engine::run() {
+void Engine::run() const {
   while (!window.shouldQuit) {
     if (!paused) {
       window.mainLoop();
@@ -38,7 +39,7 @@ void Engine::resume() { paused = false; }
 
 void Engine::pause() { paused = true; }
 
-void Engine::sUserInput() {
+void Engine::sUserInput() const {
   auto keyboardState = window.keyboardState;
 
   // Fullscreen

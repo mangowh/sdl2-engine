@@ -12,8 +12,4 @@ public:
 protected:
   Camera camera;
   EntityManager entityManager;
-
-  // std::map<Action &, std::string> actionMap;
-
-  // virtual void doActions() = 0;
 };

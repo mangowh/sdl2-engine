@@ -3,8 +3,9 @@
     "lua",
     "opengl",
     "sdl2",
+    "sdl2-image",
     "sol2",
     "yaml-cpp",
-    "sdl2-image"
+    "sdl2-ttf"
   ]
 }

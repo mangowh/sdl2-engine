@@ -6,12 +6,13 @@
 #include "CLifespan.h"
 #include "CScore.h"
 #include "CShape.h"
+#include "CText.h"
 #include "CTransform.h"
 
 #include <memory>
 #include <string>
 
-enum class EntityType { player, enemy, projectile, boundary };
+enum class EntityType { player, enemy, projectile, boundary, text };
 
 class Entity {
   const int m_id = 0;
@@ -27,6 +28,7 @@ public:
   std::shared_ptr<CInput> cInput;
   std::shared_ptr<CScore> cScore;
   std::shared_ptr<CLifespan> cLifespan;
+  std::shared_ptr<CText> cText;
 
   auto id() const { return m_id; }
   auto tag() const { return m_tag; }

@@ -1,22 +1,22 @@
 #pragma once
 
-#include "../Engine.h"
 #include "../Random.h"
-#include "../window.h"
+#include "../Window.h"
+//#include "../SceneManager.h"
 #include "Scene.h"
+
+extern Window window;
+//extern SceneManager SceneManager;
 
 class GeometryWarsScene : public Scene {
 public:
-  GeometryWarsScene(Window &window);
+  GeometryWarsScene();
 
   void init() override;
   void update() override;
 
 private:
   int currentFrame = 0;
-
-  Window &window;
-  //Engine &Engine;
 
   std::shared_ptr<Entity> player;
 

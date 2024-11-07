@@ -3,10 +3,22 @@
 const int TARGET_FPS = 60;
 const int FRAME_DELAY = 1000 / TARGET_FPS; // Frame delay in milliseconds
 
-Window::Window(ActionManager &actionManager) : actionManager(actionManager) {
+Window::Window() {
   // Initialize SDL
   if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-    printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
+    printf("SDL could not initialize: %s\n", SDL_GetError());
+    return;
+  }
+
+  // Text redenering
+  if (TTF_Init()) {
+    printf("TTF_Init Error: %s\n", TTF_GetError());
+    return;
+  }
+
+  font = TTF_OpenFont("assets/fonts/NotoSans-Regular.ttf", 24);
+  if (font == NULL) {
+    printf("Error loading font: %s\n", TTF_GetError());
     return;
   }
 
@@ -75,6 +87,7 @@ void Window::close() {
   }
 
   IMG_Quit();
+  TTF_Quit();
 
   // Quit SDL subsystems
   SDL_Quit();
@@ -86,8 +99,7 @@ void Window::handleEvents() {
   SDL_PollEvent(&event);
 
   // User requests quit
-  if (event.type == SDL_QUIT ||
-      (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)) {
+  if (event.type == SDL_QUIT) {
     shouldQuit = true;
   }
 
@@ -111,39 +123,38 @@ void Window::handleEvents() {
 
   if (event.type == SDL_KEYDOWN) {
     switch (event.key.keysym.sym) {
+    case (SDLK_ESCAPE): {
+      actionManager.dispatchAction(ActionName::esc, ActionType::start);
+      break;
+    }
+
     case (SDLK_a): {
       actionManager.dispatchAction(ActionName::left, ActionType::start);
-
       break;
     }
 
     case (SDLK_w): {
       actionManager.dispatchAction(ActionName::top, ActionType::start);
-
       break;
     }
 
     case (SDLK_d): {
       actionManager.dispatchAction(ActionName::right, ActionType::start);
-
       break;
     }
 
-    case (SDLK_b): {
+    case (SDLK_s): {
       actionManager.dispatchAction(ActionName::bottom, ActionType::start);
-
       break;
     }
 
     case (SDLK_SPACE): {
       actionManager.dispatchAction(ActionName::confirm, ActionType::start);
-
       break;
     }
 
     case (SDLK_p): {
       actionManager.dispatchAction(ActionName::togglePause, ActionType::start);
-
       break;
     }
     }
@@ -182,8 +193,8 @@ void Window::drawShape(std::shared_ptr<CTransform> transform,
   if (shape->type == triangle) {
     drawTriangle(shape->verts[0], shape->verts[1], shape->verts[2], color);
   } else {
-    drawRect(transform->pos.x, transform->pos.y, shape->width, shape->height,
-             color);
+    drawRect(transform->position.x, transform->position.y, shape->width,
+             shape->height, color);
   }
 }
 
@@ -250,7 +261,7 @@ void Window::drawDebug(std::shared_ptr<Entity> e) const {
   const SDL_Color collisionDebugColor = {15, 30, 240};
 
   if (e->cTransform) {
-    const auto pos = e->cTransform->pos;
+    const auto pos = e->cTransform->position;
 
     drawRect(pos.x - 3, pos.y - 3, 6, 6, transformDebugColor);
 

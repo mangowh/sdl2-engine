@@ -1,7 +1,6 @@
 #pragma once
 
-class CLifespan {
-public:
+struct CLifespan {
   const int total = 0;
   int remaining = 0;
 

@@ -3,10 +3,17 @@
 #include "ActionManager.h"
 #include "EntityManager.h"
 #include "Random.h"
+#include "SceneManager.h"
 #include "Scenes/GeometryWarsScene.h"
 #include "Scenes/MenuScene.h"
 #include "Scenes/Scene.h"
 #include "Window.h"
+
+#include <memory>
+
+extern ActionManager actionManager;
+extern Window window;
+extern SceneManager sceneManager;
 
 struct Config {
   int initialScene{0};
@@ -17,22 +24,17 @@ class Engine {
 public:
   Engine(Config config = {});
 
-  void run();
+  void run() const;
   void resume();
   void pause();
 
   auto isRunning() const { return paused; }
 
-  Window window = Window(actionManager);
-
 private:
   Config config;
-  ActionManager actionManager;
 
   int currentFrame = 0;
   bool paused = false;
 
-  std::shared_ptr<Scene> currentScene;
-
-  void sUserInput();
+  void sUserInput() const;
 };

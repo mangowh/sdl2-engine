@@ -4,6 +4,7 @@
 #include "CShape.h"
 #include "CTransform.h"
 #include "Entity.h"
+#include "sdl/Text.h"
 #include "sdl/Texture.h"
 
 #include <cmath>
@@ -16,29 +17,13 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_opengl.h>
+#include <SDL_ttf.h>
+
+extern ActionManager actionManager;
 
 class Window {
-
-  /* Window title */
-  const std::string windowTitle = "test";
-  /* Screen width */
-  const int screenWidth = 1920;
-  /* Screen height */
-  const int screenHeight = 1080;
-  /* The window object to render to */
-  SDL_Window *sdlWindow = NULL;
-  /* The surface contained by the window */
-  SDL_Surface *surface = NULL;
-  SDL_Renderer *renderer = NULL;
-
-  std::vector<std::function<void()>> frameCallbacks = {};
-
-  /* Event handler */
-  void handleEvents();
-  ActionManager &actionManager;
-
 public:
-  Window(ActionManager &actionManager);
+  Window();
   ~Window();
 
   void mainLoop();
@@ -50,14 +35,14 @@ public:
   void clear() const;
   void close();
 
-  Texture loadImage(std::string path);
-
   void render() const;
 
   int getWidth() const;
   int getHeight() const;
 
   void setFullscreen() const;
+
+  SDL_Renderer *getRenderer() { return renderer; };
 
   // callbacks
   std::function<void(Vector2)> onClick = NULL;
@@ -73,9 +58,32 @@ public:
   void drawCircle(Vector2 center, float radius, SDL_Color color,
                   int numSegments) const;
 
+  void drawText(Text text) const;
+
   void drawDebug(std::shared_ptr<Entity> e) const;
 
   // experimental
   void initGL();
   void renderGL() const;
+
+private:
+  /* Window title */
+  const std::string windowTitle = "test";
+  /* Screen width */
+  const int screenWidth = 1920;
+  /* Screen height */
+  const int screenHeight = 1080;
+  /* The window object to render to */
+  SDL_Window *sdlWindow = NULL;
+  /* The surface contained by the window */
+  SDL_Surface *surface = NULL;
+  SDL_Renderer *renderer = NULL;
+
+  TTF_Font *font = NULL;
+  TTF_Font *gFont = NULL;
+
+  std::vector<std::function<void()>> frameCallbacks = {};
+
+  /* Event handler */
+  void handleEvents();
 };

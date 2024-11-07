@@ -3,7 +3,7 @@
 #include <ctime>
 #include <iostream>
 
-enum class ActionName { left, top, right, bottom, confirm, togglePause };
+enum class ActionName { esc, left, top, right, bottom, confirm, togglePause };
 enum class ActionType { start, end };
 
 class Action {
@@ -17,5 +17,5 @@ public:
       : name(name), type(type) {};
 
   const ActionName &getName() const { return name; };
-  // const ActionType &type() const { return type; };
+  const ActionType &getType() const { return type; };
 };
