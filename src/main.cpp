@@ -35,10 +35,9 @@ int main(int argc, char *argv[]) {
   // load lua scripts
   sol::state lua;
   lua.open_libraries(sol::lib::base);
+
   try {
     lua.script_file("scripts/script.lua");
-
-    std::cout << "Lua script correctly loaded" << std::endl;
   } catch (const std::exception &e) {
     std::cerr << __FILE__ << ":" << __LINE__ << "\n"
               << "Error loading Lua scripts" << std::endl;

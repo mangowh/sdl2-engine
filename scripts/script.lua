@@ -1,1 +1,1 @@
-print("Hello lua")
+print("Lua works!")

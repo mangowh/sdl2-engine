@@ -9,6 +9,7 @@ class Text {
 public:
   Text(SDL_Renderer *renderer, std::string text,
        SDL_Color color = {255, 255, 255});
+  ~Text();
 
   void setColor(SDL_Color &color);
 
@@ -19,6 +20,7 @@ private:
   TTF_Font *defaultFont = TTF_OpenFont("assets/fonts/NotoSans-Regular.ttf", 24);
 
   SDL_Renderer *renderer = NULL;
+  SDL_Surface *textSurface = NULL;
   SDL_Texture *texture = NULL;
   SDL_Rect dstRect{};
 };

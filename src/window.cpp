@@ -29,8 +29,8 @@ Window::Window() {
   }
 
   // Create window
-  sdlWindow = SDL_CreateWindow(windowTitle.c_str(), SDL_WINDOWPOS_UNDEFINED,
-                               SDL_WINDOWPOS_UNDEFINED, screenWidth,
+  sdlWindow = SDL_CreateWindow(windowTitle.c_str(), SDL_WINDOWPOS_CENTERED,
+                               SDL_WINDOWPOS_CENTERED, screenWidth,
                                screenHeight, SDL_WINDOW_SHOWN);
 
   if (sdlWindow == NULL) {
@@ -251,6 +251,9 @@ void Window::drawCircle(Vector2 center, float radius, SDL_Color color,
   // Draw line segments by creating degenerate triangles
   // Each pair of consecutive vertices forms the line
   for (int i = 0; i < numSegments; ++i) {
+    SDL_SetRenderDrawColor(renderer, vertices[i].color.r, vertices[i].color.g,
+                           vertices[i].color.b, vertices[i].color.a);
+
     SDL_RenderDrawLine(renderer, vertices[i].position.x, vertices[i].position.y,
                        vertices[i + 1].position.x, vertices[i + 1].position.y);
   }
@@ -259,13 +262,37 @@ void Window::drawCircle(Vector2 center, float radius, SDL_Color color,
 void Window::drawDebug(std::shared_ptr<Entity> e) const {
   const SDL_Color transformDebugColor = {255, 30, 40};
   const SDL_Color collisionDebugColor = {15, 30, 240};
+  const SDL_Color tilemapDebugColor = {200, 200, 205, 10};
+  const SDL_Color spriteDebugColor = {1, 200, 30, 10};
+
+  if (e->cTilemap) {
+    const auto size = e->cTilemap->size;
+    const auto width = getWidth();
+    const auto height = getHeight();
+
+    SDL_SetRenderDrawColor(renderer, tilemapDebugColor.r, tilemapDebugColor.g,
+                           tilemapDebugColor.b, tilemapDebugColor.a);
+
+    for (int i = 0; i < width; i += size) {
+      SDL_RenderDrawLine(renderer, i, 0, i, height);
+    }
+
+    for (int i = 0; i < height; i += size) {
+      SDL_RenderDrawLine(renderer, 0, i, width, i);
+    }
+  }
 
   if (e->cTransform) {
     const auto pos = e->cTransform->position;
 
     drawRect(pos.x - 3, pos.y - 3, 6, 6, transformDebugColor);
 
-    drawRect(pos.x - 3, pos.y - 3, 6, 6, transformDebugColor);
+    drawRect(pos.x - 3, pos.y - 3, 6, 6, spriteDebugColor);
+
+    if (e->cSprite) {
+      drawRect(e->cTransform->position.x, e->cTransform->position.y,
+               e->cSprite->width, e->cSprite->height, spriteDebugColor, false);
+    }
   }
 
   if (e->cCollision) {

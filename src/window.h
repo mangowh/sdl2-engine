@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Action.h"
+#include "ActionManager.h"
 #include "CShape.h"
 #include "CTransform.h"
 #include "Entity.h"
@@ -11,9 +12,9 @@
 #include <functional>
 #include <iostream>
 #include <memory>
+#include <string>
 #include <vector>
 
-#include "ActionManager.h"
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_opengl.h>
@@ -42,7 +43,7 @@ public:
 
   void setFullscreen() const;
 
-  SDL_Renderer *getRenderer() { return renderer; };
+  SDL_Renderer *getRenderer() const { return renderer; };
 
   // callbacks
   std::function<void(Vector2)> onClick = NULL;
