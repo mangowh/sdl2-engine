@@ -20,5 +20,6 @@ private:
   std::shared_ptr<Entity> player;
   std::shared_ptr<Entity> tilemap;
 
+  void sUserInput();
   void sRender();
 };

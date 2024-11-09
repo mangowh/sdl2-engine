@@ -108,7 +108,7 @@ void Window::handleEvents() {
     int x, y;
     Uint32 buttons = SDL_GetMouseState(&x, &y);
 
-    Vector2 coords = Vector2((float)x, (float)y);
+    Physics::Vector2 coords = Physics::Vector2((float)x, (float)y);
     onClick(coords);
   }
 
@@ -117,7 +117,7 @@ void Window::handleEvents() {
     int x, y;
     Uint32 buttons = SDL_GetMouseState(&x, &y);
 
-    Vector2 coords = Vector2((float)x, (float)y);
+    Physics::Vector2 coords = Physics::Vector2((float)x, (float)y);
     onRightClick(coords);
   }
 
@@ -221,7 +221,7 @@ void Window::drawRect(int x, int y, int width, int height, SDL_Color color,
   }
 }
 
-void Window::drawTriangle(Vector2 v1, Vector2 v2, Vector2 v3,
+void Window::drawTriangle(Physics::Vector2 v1, Physics::Vector2 v2, Physics::Vector2 v3,
                           SDL_Color color) const {
   const std::vector<SDL_Vertex> verts = {{SDL_FPoint{v1.x, v1.y}, color},
                                          {SDL_FPoint{v2.x, v2.y}, color},
@@ -230,7 +230,7 @@ void Window::drawTriangle(Vector2 v1, Vector2 v2, Vector2 v3,
   SDL_RenderGeometry(renderer, nullptr, verts.data(), verts.size(), nullptr, 0);
 }
 
-void Window::drawCircle(Vector2 center, float radius, SDL_Color color,
+void Window::drawCircle(Physics::Vector2 center, float radius, SDL_Color color,
                         int numSegments = 100) const {
   std::vector<SDL_Vertex> vertices;
 
@@ -280,6 +280,20 @@ void Window::drawDebug(std::shared_ptr<Entity> e) const {
     for (int i = 0; i < height; i += size) {
       SDL_RenderDrawLine(renderer, 0, i, width, i);
     }
+
+    for (auto &colliderData : e->cTilemap->collision) {
+      const auto c = std::make_shared<CCollision>(colliderData.second);
+
+      const auto pos = c->center;
+      drawRect(pos.x - 3, pos.y - 3, 6, 6, collisionDebugColor);
+
+      if (c->shape == ColliderShape::circle) {
+        drawCircle(pos, c->radius, collisionDebugColor);
+      } else {
+        drawRect(c->p1.x, c->p1.y, c->p2.x - c->p1.x, c->p2.y - c->p1.y,
+                 collisionDebugColor, false);
+      }
+    }
   }
 
   if (e->cTransform) {
@@ -289,10 +303,10 @@ void Window::drawDebug(std::shared_ptr<Entity> e) const {
 
     drawRect(pos.x - 3, pos.y - 3, 6, 6, spriteDebugColor);
 
-    if (e->cSprite) {
-      drawRect(e->cTransform->position.x, e->cTransform->position.y,
-               e->cSprite->width, e->cSprite->height, spriteDebugColor, false);
-    }
+    //if (e->cSprite) {
+    //  drawRect(e->cTransform->position.x, e->cTransform->position.y,
+    //           e->cSprite->width, e->cSprite->height, spriteDebugColor, false);
+    //}
   }
 
   if (e->cCollision) {

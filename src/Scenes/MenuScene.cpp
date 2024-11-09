@@ -6,17 +6,19 @@ MenuScene::~MenuScene() {}
 
 void MenuScene::init() {
   const auto &option1 = entityManager.addEntity(EntityType::text);
-  option1->cTransform = std::make_shared<CTransform>(Vector2({100, 100}));
+  option1->cTransform = std::make_shared<CTransform>(Physics::Vector2({100, 100}));
   option1->cText = std::make_shared<CText>("Scene 1");
   options.push_back(option1);
 
   const auto &option2 = entityManager.addEntity(EntityType::text);
-  option2->cTransform = std::make_shared<CTransform>(Vector2({100, 200}));
+  option2->cTransform =
+      std::make_shared<CTransform>(Physics::Vector2({100, 200}));
   option2->cText = std::make_shared<CText>("Scene 2");
   options.push_back(option2);
 
   const auto &option3 = entityManager.addEntity(EntityType::text);
-  option3->cTransform = std::make_shared<CTransform>(Vector2({100, 300}));
+  option3->cTransform =
+      std::make_shared<CTransform>(Physics::Vector2({100, 300}));
   option3->cText = std::make_shared<CText>("Scene 3");
   options.push_back(option3);
 

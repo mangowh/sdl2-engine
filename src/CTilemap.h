@@ -1,7 +1,8 @@
 #pragma once
 
 #include "./sdl/Texture.h"
-#include "Vector2.h"
+#include "CCollision.h"
+#include "Physics.h"
 
 #include <string>
 #include <utility>
@@ -12,7 +13,7 @@ struct CTilemap {
 
   int size;
 
-  std::vector<std::pair<Vector2, Texture>> tiles;
+  std::vector<std::pair<Physics::Vector2, Texture>> tiles;
 
-  std::vector<std::pair<Vector2, Texture>> debugTiles;
+  std::vector<std::pair<Physics::Vector2, CCollision>> collision;
 };

@@ -7,9 +7,9 @@ void GeometryWarsScene::init() {
 
   spawnPlayer();
 
-  window.onClick = [&](Vector2 coords) { spawnProjectile(coords); };
+  window.onClick = [&](Physics::Vector2 coords) { spawnProjectile(coords); };
 
-  window.onRightClick = [&](Vector2 coords) { specialMove(coords); };
+  window.onRightClick = [&](Physics::Vector2 coords) { specialMove(coords); };
 
   actionManager.registerSubscriber(ActionName::esc, [&](Action action) {
     // TODO go back
@@ -241,7 +241,6 @@ bool GeometryWarsScene::checkCollision(std::shared_ptr<CCollision> c1,
   }
 
   if (c1->shape == ColliderShape::rect && c2->shape == ColliderShape::rect) {
-
     float r1x = c1->p1.x;
     float r1y = c1->p1.y;
     float r1w = c1->w();
@@ -278,32 +277,34 @@ void GeometryWarsScene::setWorldBoundaries() {
 
   const auto topBoundary = entityManager.addEntity(EntityType::boundary);
   topBoundary->cTransform =
-      std::make_shared<CTransform>(Vector2({0, -boundarySize}));
+      std::make_shared<CTransform>(Physics::Vector2({0, -boundarySize}));
   topBoundary->cCollision = std::make_shared<CCollision>(
-      Vector2({0, -boundarySize}), Vector2({windowW, 0}));
+      Physics::Vector2({0, -boundarySize}), Physics::Vector2({windowW, 0}));
 
   const auto rightBoundary = entityManager.addEntity(EntityType::boundary);
   rightBoundary->cTransform =
-      std::make_shared<CTransform>(Vector2({windowW, 0}));
+      std::make_shared<CTransform>(Physics::Vector2({windowW, 0}));
   rightBoundary->cCollision = std::make_shared<CCollision>(
-      Vector2({windowW, 0}), Vector2({windowW + boundarySize, windowH}));
+      Physics::Vector2({windowW, 0}),
+      Physics::Vector2({windowW + boundarySize, windowH}));
 
   const auto bottomBoundary = entityManager.addEntity(EntityType::boundary);
   bottomBoundary->cTransform =
-      std::make_shared<CTransform>(Vector2({0, windowH}));
+      std::make_shared<CTransform>(Physics::Vector2({0, windowH}));
   bottomBoundary->cCollision = std::make_shared<CCollision>(
-      Vector2({0, windowH}), Vector2({windowW, windowH + boundarySize}));
+      Physics::Vector2({0, windowH}),
+      Physics::Vector2({windowW, windowH + boundarySize}));
 
   const auto leftBoundary = entityManager.addEntity(EntityType::boundary);
   leftBoundary->cTransform =
-      std::make_shared<CTransform>(Vector2({-boundarySize, 0}));
+      std::make_shared<CTransform>(Physics::Vector2({-boundarySize, 0}));
   leftBoundary->cCollision = std::make_shared<CCollision>(
-      Vector2({-boundarySize, 0}), Vector2({0, windowH}));
+      Physics::Vector2({-boundarySize, 0}), Physics::Vector2({0, windowH}));
 }
 
 void GeometryWarsScene::spawnPlayer() {
-  Vector2 centerOfScreen = {(window.getWidth() - 100) / 2.0f,
-                            (window.getHeight() - 100) / 2.0f};
+  Physics::Vector2 centerOfScreen = {(window.getWidth() - 100) / 2.0f,
+                                     (window.getHeight() - 100) / 2.0f};
 
   player = entityManager.addEntity(EntityType::player);
   player->cTransform = std::make_shared<CTransform>(centerOfScreen);
@@ -315,8 +316,8 @@ void GeometryWarsScene::spawnPlayer() {
 void GeometryWarsScene::spawnEnemy() {
   Random rand;
 
-  Vector2 pos = {(float)rand.genRandomInt(0, window.getWidth()),
-                 (float)rand.genRandomInt(0, window.getHeight())};
+  Physics::Vector2 pos = {(float)rand.genRandomInt(0, window.getWidth()),
+                          (float)rand.genRandomInt(0, window.getHeight())};
 
   auto enemy = entityManager.addEntity(EntityType::enemy);
   enemy->cTransform = std::make_shared<CTransform>(
@@ -330,13 +331,13 @@ void GeometryWarsScene::spawnEnemy() {
   enemy->cCollision = std::make_shared<CCollision>(pos, pos + 50);
 }
 
-void GeometryWarsScene::spawnProjectile(Vector2 direction) {
+void GeometryWarsScene::spawnProjectile(Physics::Vector2 direction) {
   Random rand;
 
   auto playerPosition = player->cTransform->position;
 
-  Vector2 playerCenter =
-      Vector2(playerPosition.x + 100 / 2.0f, playerPosition.y + 100 / 2.0f);
+  Physics::Vector2 playerCenter = Physics::Vector2(
+      playerPosition.x + 100 / 2.0f, playerPosition.y + 100 / 2.0f);
   auto directionFromPlayer = direction - playerCenter;
 
   auto projectile = entityManager.addEntity(EntityType::projectile);
@@ -345,9 +346,12 @@ void GeometryWarsScene::spawnProjectile(Vector2 direction) {
 
   const int dimension = 50;
 
-  Vector2 v1 = Vector2(playerCenter.x + dimension / 2, playerCenter.y);
-  Vector2 v2 = Vector2(playerCenter.x, playerCenter.y + dimension);
-  Vector2 v3 = Vector2(playerCenter.x + dimension, playerCenter.y + dimension);
+  Physics::Vector2 v1 =
+      Physics::Vector2(playerCenter.x + dimension / 2, playerCenter.y);
+  Physics::Vector2 v2 =
+      Physics::Vector2(playerCenter.x, playerCenter.y + dimension);
+  Physics::Vector2 v3 =
+      Physics::Vector2(playerCenter.x + dimension, playerCenter.y + dimension);
 
   v1 -= dimension / 2.0f;
   v2 -= dimension / 2.0f;
@@ -363,7 +367,7 @@ void GeometryWarsScene::spawnProjectile(Vector2 direction) {
   projectile->cLifespan = std::make_shared<CLifespan>(100);
 }
 
-void GeometryWarsScene::specialMove(Vector2 position) {
+void GeometryWarsScene::specialMove(Physics::Vector2 position) {
   const int dimension = 100;
 
   auto projectile = entityManager.addEntity(EntityType::projectile);

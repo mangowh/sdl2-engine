@@ -1,7 +1,9 @@
-#ifndef VECTOR2_H
-#define VECTOR2_H
+#pragma once
 
 #include <cmath>
+#include <memory>
+
+namespace Physics {
 
 class Vector2 {
 public:
@@ -34,6 +36,7 @@ public:
   void operator-=(const float f);
   void operator-=(const Vector2 &v);
 
+  void operator*=(const float &f);
   void operator*=(const Vector2 &v);
 
   void operator/=(const Vector2 &v);
@@ -44,4 +47,15 @@ public:
   Vector2 normalized() const;
 };
 
-#endif // VECTOR2_H
+struct Rect {
+  Rect(Vector2 p1, Vector2 p2) : p1(p1), p2(p2) {};
+
+  float width() const { return p2.x - p1.x; };
+  float height() const { return p2.y - p1.y; };
+
+  const Vector2 p1;
+  const Vector2 p2;
+};
+
+bool checkCollision(const Rect &c1, const Rect &c2);
+} // namespace Physics

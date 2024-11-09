@@ -46,8 +46,8 @@ public:
   SDL_Renderer *getRenderer() const { return renderer; };
 
   // callbacks
-  std::function<void(Vector2)> onClick = NULL;
-  std::function<void(Vector2)> onRightClick = NULL;
+  std::function<void(Physics::Vector2)> onClick = NULL;
+  std::function<void(Physics::Vector2)> onRightClick = NULL;
 
   // drawing
   void drawShape(std::shared_ptr<CTransform> transform,
@@ -55,8 +55,8 @@ public:
   void drawPoint(int x, int y, SDL_Color color) const;
   void drawRect(int x, int y, int width, int height, SDL_Color color,
                 bool fill = true) const;
-  void drawTriangle(Vector2 v1, Vector2 v2, Vector2 v3, SDL_Color color) const;
-  void drawCircle(Vector2 center, float radius, SDL_Color color,
+  void drawTriangle(Physics::Vector2 v1, Physics::Vector2 v2, Physics::Vector2 v3, SDL_Color color) const;
+  void drawCircle(Physics::Vector2 center, float radius, SDL_Color color,
                   int numSegments) const;
 
   void drawText(Text text) const;

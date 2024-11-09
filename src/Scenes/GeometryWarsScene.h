@@ -33,6 +33,6 @@ private:
   void setWorldBoundaries();
   void spawnPlayer();
   void spawnEnemy();
-  void spawnProjectile(Vector2 direction);
-  void specialMove(Vector2 position);
+  void spawnProjectile(Physics::Vector2 direction);
+  void specialMove(Physics::Vector2 position);
 };
