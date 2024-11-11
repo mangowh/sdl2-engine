@@ -6,7 +6,8 @@ MenuScene::~MenuScene() {}
 
 void MenuScene::init() {
   const auto &option1 = entityManager.addEntity(EntityType::text);
-  option1->cTransform = std::make_shared<CTransform>(Physics::Vector2({100, 100}));
+  option1->cTransform =
+      std::make_shared<CTransform>(Physics::Vector2({100, 100}));
   option1->cText = std::make_shared<CText>("Scene 1");
   options.push_back(option1);
 
@@ -22,11 +23,11 @@ void MenuScene::init() {
   option3->cText = std::make_shared<CText>("Scene 3");
   options.push_back(option3);
 
-  actionManager.registerSubscriber(ActionName::top, [&](Action action) {
+  actionManager.registerSubscriber(ActionName::top, [&](Action) {
     // if (action.getType() == ActionType::end) {
     currentSelectedOption--;
     if (currentSelectedOption < 0) {
-      currentSelectedOption = options.size() - 1;
+      currentSelectedOption = (int)options.size() - 1;
     }
 
     for (auto &o : options) {
@@ -35,7 +36,7 @@ void MenuScene::init() {
     //}
   });
 
-  actionManager.registerSubscriber(ActionName::bottom, [&](Action action) {
+  actionManager.registerSubscriber(ActionName::bottom, [&](Action) {
     // if (action.getType() == ActionType::end) {
     currentSelectedOption++;
     if (currentSelectedOption > options.size() - 1) {
@@ -49,21 +50,21 @@ void MenuScene::init() {
     //}
   });
 
-  actionManager.registerSubscriber(ActionName::confirm, [&](Action action) {
+  actionManager.registerSubscriber(ActionName::confirm, [&](Action) {
     sceneManager.setCurrentScene(currentSelectedOption + 1);
   });
 
-  actionManager.registerSubscriber(ActionName::esc, [&](Action action) { window.shouldQuit = true;
-  });
+  actionManager.registerSubscriber(ActionName::esc,
+                                   [&](Action) { window.shouldQuit = true; });
 }
 
 void MenuScene::update() {
   entityManager.update();
 
   // text loading system
-  const auto &text = entityManager.getEntities(EntityType::text);
+  const auto &textVector = entityManager.getEntities(EntityType::text);
 
-  for (auto &t : text) {
+  for (auto &t : textVector) {
     if (t->cText->textObj == NULL) {
       Text text{window.getRenderer(), t->cText->text};
       t->cText->textObj = std::make_shared<Text>(text);

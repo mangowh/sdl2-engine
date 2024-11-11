@@ -11,7 +11,7 @@ void GeometryWarsScene::init() {
 
   window.onRightClick = [&](Physics::Vector2 coords) { specialMove(coords); };
 
-  actionManager.registerSubscriber(ActionName::esc, [&](Action action) {
+  actionManager.registerSubscriber(ActionName::esc, [&](Action) {
     // TODO go back
   });
 }
@@ -206,17 +206,17 @@ bool GeometryWarsScene::checkCollision(std::shared_ptr<CCollision> c1,
   if (c1->shape == ColliderShape::circle && c2->shape == ColliderShape::rect) {
 
     // https://www.jeffreythompson.org/collision-detection/circle-rect.php
-    const float cx = c1->center.x;
-    const float cy = c1->center.y;
-    const float radius = c1->radius;
-    const float rx = c2->p1.x;
-    const float ry = c2->p1.y;
-    const float rw = c2->p2.x - c2->p1.x;
-    const float rh = c2->p2.y - c2->p1.y;
+    const int cx = c1->center.x;
+    const int cy = c1->center.y;
+    const int radius = c1->radius;
+    const int rx = c2->p1.x;
+    const int ry = c2->p1.y;
+    const int rw = c2->p2.x - c2->p1.x;
+    const int rh = c2->p2.y - c2->p1.y;
 
     // temporary variables to set edges for testing
-    float testX = cx;
-    float testY = cy;
+    int testX = cx;
+    int testY = cy;
 
     // which edge is closest?
     if (cx < rx)
@@ -229,9 +229,9 @@ bool GeometryWarsScene::checkCollision(std::shared_ptr<CCollision> c1,
       testY = ry + rh; // bottom edge
 
     // get distance from closest edges
-    float distX = cx - testX;
-    float distY = cy - testY;
-    float distance = sqrt((distX * distX) + (distY * distY));
+    int distX = cx - testX;
+    int distY = cy - testY;
+    int distance = (int)sqrt((distX * distX) + (distY * distY));
 
     // if the distance is less than the radius, collision!
     if (distance <= radius) {
@@ -241,14 +241,14 @@ bool GeometryWarsScene::checkCollision(std::shared_ptr<CCollision> c1,
   }
 
   if (c1->shape == ColliderShape::rect && c2->shape == ColliderShape::rect) {
-    float r1x = c1->p1.x;
-    float r1y = c1->p1.y;
-    float r1w = c1->w();
-    float r1h = c1->h();
-    float r2x = c2->p1.x;
-    float r2y = c2->p1.y;
-    float r2w = c2->w();
-    float r2h = c2->h();
+    int r1x = c1->p1.x;
+    int r1y = c1->p1.y;
+    int r1w = c1->w();
+    int r1h = c1->h();
+    int r2x = c2->p1.x;
+    int r2y = c2->p1.y;
+    int r2w = c2->w();
+    int r2h = c2->h();
 
     // are the sides of one rectangle touching the other?
 
@@ -270,10 +270,10 @@ bool GeometryWarsScene::checkCollision(std::shared_ptr<CCollision> c1,
 }
 
 void GeometryWarsScene::setWorldBoundaries() {
-  const float boundarySize = 10.0;
+  const int boundarySize = 10;
 
-  const float windowW = (float)window.getWidth();
-  const float windowH = (float)window.getHeight();
+  const int windowW = (int)window.getWidth();
+  const int windowH = (int)window.getHeight();
 
   const auto topBoundary = entityManager.addEntity(EntityType::boundary);
   topBoundary->cTransform =
@@ -303,8 +303,8 @@ void GeometryWarsScene::setWorldBoundaries() {
 }
 
 void GeometryWarsScene::spawnPlayer() {
-  Physics::Vector2 centerOfScreen = {(window.getWidth() - 100) / 2.0f,
-                                     (window.getHeight() - 100) / 2.0f};
+  Physics::Vector2 centerOfScreen = {(window.getWidth() - 100) / 2,
+                                     (window.getHeight() - 100) / 2};
 
   player = entityManager.addEntity(EntityType::player);
   player->cTransform = std::make_shared<CTransform>(centerOfScreen);
@@ -316,13 +316,13 @@ void GeometryWarsScene::spawnPlayer() {
 void GeometryWarsScene::spawnEnemy() {
   Random rand;
 
-  Physics::Vector2 pos = {(float)rand.genRandomInt(0, window.getWidth()),
-                          (float)rand.genRandomInt(0, window.getHeight())};
+  Physics::Vector2 pos = {(int)rand.genRandomInt(0, window.getWidth()),
+                          (int)rand.genRandomInt(0, window.getHeight())};
 
   auto enemy = entityManager.addEntity(EntityType::enemy);
   enemy->cTransform = std::make_shared<CTransform>(
-      CTransform(pos, {(rand.genRandomInt(1, 200) - 100) / 10.0f,
-                       (rand.genRandomInt(1, 200) - 100) / 10.0f}));
+      CTransform(pos, {(rand.genRandomInt(1, 200) - 100) / 10,
+                       (rand.genRandomInt(1, 200) - 100) / 10}));
 
   enemy->cShape = std::make_shared<CShape>(CShape(
       50, 50,
@@ -336,8 +336,8 @@ void GeometryWarsScene::spawnProjectile(Physics::Vector2 direction) {
 
   auto playerPosition = player->cTransform->position;
 
-  Physics::Vector2 playerCenter = Physics::Vector2(
-      playerPosition.x + 100 / 2.0f, playerPosition.y + 100 / 2.0f);
+  Physics::Vector2 playerCenter =
+      Physics::Vector2(playerPosition.x + 100 / 2, playerPosition.y + 100 / 2);
   auto directionFromPlayer = direction - playerCenter;
 
   auto projectile = entityManager.addEntity(EntityType::projectile);
@@ -353,9 +353,9 @@ void GeometryWarsScene::spawnProjectile(Physics::Vector2 direction) {
   Physics::Vector2 v3 =
       Physics::Vector2(playerCenter.x + dimension, playerCenter.y + dimension);
 
-  v1 -= dimension / 2.0f;
-  v2 -= dimension / 2.0f;
-  v3 -= dimension / 2.0f;
+  v1 -= dimension / 2;
+  v2 -= dimension / 2;
+  v3 -= dimension / 2;
 
   const Color randomColor = {(uint8_t)rand.genRandomInt(0, 255),
                              (uint8_t)rand.genRandomInt(0, 255),
@@ -363,7 +363,7 @@ void GeometryWarsScene::spawnProjectile(Physics::Vector2 direction) {
   projectile->cShape =
       std::make_shared<CShape>(CShape(v1, v2, v3, randomColor));
   projectile->cCollision =
-      std::make_shared<CCollision>(playerCenter, dimension / 2.0f);
+      std::make_shared<CCollision>(playerCenter, dimension / 2);
   projectile->cLifespan = std::make_shared<CLifespan>(100);
 }
 
@@ -372,13 +372,13 @@ void GeometryWarsScene::specialMove(Physics::Vector2 position) {
 
   auto projectile = entityManager.addEntity(EntityType::projectile);
   projectile->cTransform =
-      std::make_shared<CTransform>(CTransform(position - dimension / 2.0f));
+      std::make_shared<CTransform>(CTransform(position - dimension / 2));
 
   const Color color = {255, 34, 22};
 
   projectile->cShape =
       std::make_shared<CShape>(CShape(dimension, dimension, color));
   projectile->cCollision =
-      std::make_shared<CCollision>(position, dimension / 2.0f);
+      std::make_shared<CCollision>(position, dimension / 2);
   projectile->cLifespan = std::make_shared<CLifespan>(50);
 }

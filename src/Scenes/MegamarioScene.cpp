@@ -49,8 +49,8 @@ void MegamarioScene::init() {
 
           Texture t{window.getRenderer(), path};
 
-          const auto x = (float)((i - 1) % tilesOnRow);
-          const auto y = (float)((i - 1) / tilesOnRow);
+          const auto x = (i - 1) % tilesOnRow;
+          const auto y = (i - 1) / tilesOnRow;
 
           std::cout << x << " : " << y << std::endl;
 
@@ -166,7 +166,8 @@ void MegamarioScene::sRender() {
         const auto &pos = tileInfo.first;
         const auto &texture = tileInfo.second;
 
-        SDL_Rect dstRect = {pos.x, pos.y, size, size};
+        SDL_Rect dstRect = {static_cast<int>(pos.x), static_cast<int>(pos.y),
+                            static_cast<int>(size), static_cast<int>(size)};
 
         SDL_RenderCopy(window.getRenderer(), (SDL_Texture *)texture.texture,
                        NULL, &dstRect);
@@ -179,7 +180,8 @@ void MegamarioScene::sRender() {
 
     if (e->cTransform && e->cSprite) {
       // Set the destination rectangle for the sprite
-      SDL_Rect dstRect = {e->cTransform->position.x, e->cTransform->position.y,
+      SDL_Rect dstRect = {static_cast<int>(e->cTransform->position.x),
+                          static_cast<int>(e->cTransform->position.y),
                           e->cSprite->width, e->cSprite->height};
 
       // Render the sprite

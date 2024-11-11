@@ -17,7 +17,7 @@ static void printException(std::runtime_error e) {
   std::cerr << e.what() << std::endl;
 }
 
-int main(int argc, char *argv[]) {
+int main(int, char *) {
   SDL_SetMainReady();
 
   // load configuration
@@ -26,7 +26,7 @@ int main(int argc, char *argv[]) {
     YAML::Node node = YAML::LoadFile("config/config.yaml");
 
     if (node["playerSpeed"]) {
-      config.playerSpeed = node["playerSpeed"].as<float>();
+      config.playerSpeed = node["playerSpeed"].as<int>();
     }
   } catch (const YAML::Exception &e) {
     printException(e);

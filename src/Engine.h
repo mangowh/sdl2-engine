@@ -18,7 +18,7 @@ extern SceneManager sceneManager;
 
 struct Config {
   int initialScene{0};
-  float playerSpeed{10.0f};
+  int playerSpeed{10};
 };
 
 class Engine {

@@ -55,7 +55,7 @@ void Window::mainLoop() {
   handleEvents();
 
   // Get the keyboard state
-  keyboardState = SDL_GetKeyboardState(NULL);
+  keyboardState = SDL_GetKeyboardState(nullptr);
 
   for (auto &func : frameCallbacks) {
     func();
@@ -106,18 +106,18 @@ void Window::handleEvents() {
   if (onClick && event.type == SDL_MOUSEBUTTONDOWN &&
       event.button.button == SDL_BUTTON_LEFT) {
     int x, y;
-    Uint32 buttons = SDL_GetMouseState(&x, &y);
+    SDL_GetMouseState(&x, &y);
 
-    Physics::Vector2 coords = Physics::Vector2((float)x, (float)y);
+    Physics::Vector2 coords = Physics::Vector2(x, y);
     onClick(coords);
   }
 
   if (onRightClick && event.type == SDL_MOUSEBUTTONDOWN &&
       event.button.button == SDL_BUTTON_RIGHT) {
     int x, y;
-    Uint32 buttons = SDL_GetMouseState(&x, &y);
+    SDL_GetMouseState(&x, &y);
 
-    Physics::Vector2 coords = Physics::Vector2((float)x, (float)y);
+    Physics::Vector2 coords = Physics::Vector2(x, y);
     onRightClick(coords);
   }
 
@@ -221,25 +221,27 @@ void Window::drawRect(int x, int y, int width, int height, SDL_Color color,
   }
 }
 
-void Window::drawTriangle(Physics::Vector2 v1, Physics::Vector2 v2, Physics::Vector2 v3,
-                          SDL_Color color) const {
-  const std::vector<SDL_Vertex> verts = {{SDL_FPoint{v1.x, v1.y}, color},
-                                         {SDL_FPoint{v2.x, v2.y}, color},
-                                         {SDL_FPoint{v3.x, v3.y}, color}};
+void Window::drawTriangle(Physics::Vector2 v1, Physics::Vector2 v2,
+                          Physics::Vector2 v3, SDL_Color color) const {
+  const std::vector<SDL_Vertex> verts = {
+      {SDL_FPoint{(float)v1.x, (float)v1.y}, color},
+      {SDL_FPoint{(float)v2.x, (float)v2.y}, color},
+      {SDL_FPoint{(float)v3.x, (float)v3.y}, color}};
 
-  SDL_RenderGeometry(renderer, nullptr, verts.data(), verts.size(), nullptr, 0);
+  SDL_RenderGeometry(renderer, nullptr, verts.data(), (int)verts.size(),
+                     nullptr, 0);
 }
 
-void Window::drawCircle(Physics::Vector2 center, float radius, SDL_Color color,
+void Window::drawCircle(Physics::Vector2 center, int radius, SDL_Color color,
                         int numSegments = 100) const {
   std::vector<SDL_Vertex> vertices;
 
   // Create vertices around the perimeter of the circle
   for (int i = 0; i <= numSegments; ++i) {
     float theta =
-        2.0f * M_PI * float(i) / float(numSegments); // Angle in radians
-    float x = center.x + radius * cosf(theta);       // X coordinate
-    float y = center.y + radius * sinf(theta);       // Y coordinate
+        2.0f * (float)M_PI * float(i) / float(numSegments); // Angle in radians
+    float x = (float)center.x + radius * cosf(theta);       // X coordinate
+    float y = (float)center.y + radius * sinf(theta);       // Y coordinate
 
     SDL_Vertex vertex;
     vertex.position.x = x;
@@ -254,8 +256,9 @@ void Window::drawCircle(Physics::Vector2 center, float radius, SDL_Color color,
     SDL_SetRenderDrawColor(renderer, vertices[i].color.r, vertices[i].color.g,
                            vertices[i].color.b, vertices[i].color.a);
 
-    SDL_RenderDrawLine(renderer, vertices[i].position.x, vertices[i].position.y,
-                       vertices[i + 1].position.x, vertices[i + 1].position.y);
+    SDL_RenderDrawLine(
+        renderer, (int)vertices[i].position.x, (int)vertices[i].position.y,
+        (int)vertices[i + 1].position.x, (int)vertices[i + 1].position.y);
   }
 }
 
@@ -303,10 +306,11 @@ void Window::drawDebug(std::shared_ptr<Entity> e) const {
 
     drawRect(pos.x - 3, pos.y - 3, 6, 6, spriteDebugColor);
 
-    //if (e->cSprite) {
-    //  drawRect(e->cTransform->position.x, e->cTransform->position.y,
-    //           e->cSprite->width, e->cSprite->height, spriteDebugColor, false);
-    //}
+    // if (e->cSprite) {
+    //   drawRect(e->cTransform->position.x, e->cTransform->position.y,
+    //            e->cSprite->width, e->cSprite->height, spriteDebugColor,
+    //            false);
+    // }
   }
 
   if (e->cCollision) {

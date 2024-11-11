@@ -19,8 +19,8 @@ public:
 private:
   TTF_Font *defaultFont = TTF_OpenFont("assets/fonts/NotoSans-Regular.ttf", 24);
 
-  SDL_Renderer *renderer = NULL;
-  SDL_Surface *textSurface = NULL;
-  SDL_Texture *texture = NULL;
+  SDL_Renderer *renderer = nullptr;
+  SDL_Surface *textSurface = nullptr;
+  SDL_Texture *texture = nullptr;
   SDL_Rect dstRect{};
 };

@@ -5,14 +5,14 @@
 #include <vector>
 
 struct CTransform {
-  Physics::Vector2 position{0.0f, 0.0f};
-  Physics::Vector2 previousPosition{0.0f, 0.0f};
+  Physics::Vector2 position{0, 0};
+  Physics::Vector2 previousPosition{0, 0};
 
-  Physics::Vector2 localPosition{0.0f, 0.0f};
+  Physics::Vector2 localPosition{0, 0};
 
-  Physics::Vector2 origin{0.0f, 0.0f};
+  Physics::Vector2 origin{0, 0};
 
-  Physics::Vector2 scale{1.0, 1.0};
+  Physics::Vector2 scale{1, 1};
   Physics::Vector2 velocity{0, 0};
 
   float angle = 0;

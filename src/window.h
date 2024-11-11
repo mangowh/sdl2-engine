@@ -56,7 +56,7 @@ public:
   void drawRect(int x, int y, int width, int height, SDL_Color color,
                 bool fill = true) const;
   void drawTriangle(Physics::Vector2 v1, Physics::Vector2 v2, Physics::Vector2 v3, SDL_Color color) const;
-  void drawCircle(Physics::Vector2 center, float radius, SDL_Color color,
+  void drawCircle(Physics::Vector2 center, int radius, SDL_Color color,
                   int numSegments) const;
 
   void drawText(Text text) const;

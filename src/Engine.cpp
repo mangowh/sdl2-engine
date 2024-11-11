@@ -4,7 +4,7 @@ ActionManager actionManager;
 Window window;
 SceneManager sceneManager;
 
-Engine::Engine(Config config) {
+Engine::Engine(Config) {
   sceneManager.sceneMap.push_back(std::make_shared<MenuScene>()); // 0
 
   sceneManager.sceneMap.push_back(std::make_shared<GeometryWarsScene>()); // 1
@@ -21,7 +21,7 @@ Engine::Engine(Config config) {
     currentFrame++;
   });
 
-  actionManager.registerSubscriber(ActionName::togglePause, [&](Action action) {
+  actionManager.registerSubscriber(ActionName::togglePause, [&](Action) {
     if (!paused) {
       pause();
     } else {

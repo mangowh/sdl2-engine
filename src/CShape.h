@@ -15,13 +15,13 @@ public:
          Color color = {255, 255, 255})
       : type(triangle), verts(std::vector({v1, v2, v3})), color(color) {}
 
-  CShape(float width, float height, Color color = {255, 255, 255})
+  CShape(int width, int height, Color color = {255, 255, 255})
       : type(rect), width(width), height(height), color(color) {}
 
   const ShapeType type{triangle};
 
-  float width{0};
-  float height{0};
+  int width{0};
+  int height{0};
 
   std::vector<Physics::Vector2> verts;
 

@@ -4,7 +4,7 @@ Text::Text(SDL_Renderer *renderer, std::string text, SDL_Color color)
     : renderer(renderer) {
   textSurface = TTF_RenderText_Solid(defaultFont, text.c_str(), color);
 
-  if (textSurface == NULL) {
+  if (textSurface == nullptr) {
     printf("Could not create surface message! SDL_Error: %s\n", SDL_GetError());
     return;
   }
@@ -42,5 +42,5 @@ void Text::draw(int x = 0, int y = 0) {
   dstRect.x = x;
   dstRect.y = y;
 
-  SDL_RenderCopy(renderer, texture, NULL, &dstRect);
+  SDL_RenderCopy(renderer, texture, nullptr, &dstRect);
 }
