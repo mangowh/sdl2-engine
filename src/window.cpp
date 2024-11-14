@@ -1,4 +1,10 @@
-#include "window.h"
+#include "Window.h"
+
+#include "Action.h"
+
+#include <cmath>
+#include <functional>
+#include <iostream>
 
 const int TARGET_FPS = 60;
 const int FRAME_DELAY = 1000 / TARGET_FPS; // Frame delay in milliseconds

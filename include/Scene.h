@@ -1,8 +1,7 @@
 #pragma once
 
-#include "../Camera.h"
-#include "../EntityManager.h"
-#include "../Action.h"
+#include "Camera.h"
+#include "EntityManager.h"
 
 class Scene {
 public:

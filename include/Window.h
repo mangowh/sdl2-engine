@@ -1,24 +1,19 @@
 #pragma once
 
-#include "Action.h"
 #include "ActionManager.h"
 #include "CShape.h"
 #include "CTransform.h"
 #include "Entity.h"
-#include "sdl/Text.h"
-#include "sdl/Texture.h"
-
-#include <cmath>
-#include <functional>
-#include <iostream>
-#include <memory>
-#include <string>
-#include <vector>
+#include "Text.h"
 
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_opengl.h>
 #include <SDL_ttf.h>
+
+#include <memory>
+#include <string>
+#include <vector>
 
 extern ActionManager actionManager;
 
@@ -55,7 +50,8 @@ public:
   void drawPoint(int x, int y, SDL_Color color) const;
   void drawRect(int x, int y, int width, int height, SDL_Color color,
                 bool fill = true) const;
-  void drawTriangle(Physics::Vector2 v1, Physics::Vector2 v2, Physics::Vector2 v3, SDL_Color color) const;
+  void drawTriangle(Physics::Vector2 v1, Physics::Vector2 v2,
+                    Physics::Vector2 v3, SDL_Color color) const;
   void drawCircle(Physics::Vector2 center, int radius, SDL_Color color,
                   int numSegments) const;
 

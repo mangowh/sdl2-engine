@@ -1,11 +1,8 @@
 #pragma once
 
-#include "../CTilemap.h"
-#include "../Entity.h"
-#include "../Window.h"
+#include "Entity.h"
 #include "Scene.h"
-
-#include <sol/sol.hpp>
+#include "Window.h"
 
 extern Window window;
 

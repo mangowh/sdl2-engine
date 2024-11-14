@@ -1,12 +1,9 @@
 #pragma once
 
-#include "../Random.h"
-#include "../Window.h"
-//#include "../SceneManager.h"
 #include "Scene.h"
+#include "Window.h"
 
 extern Window window;
-//extern SceneManager SceneManager;
 
 class GeometryWarsScene : public Scene {
 public:

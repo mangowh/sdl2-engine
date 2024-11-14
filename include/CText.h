@@ -1,7 +1,8 @@
 #pragma once
 
-#include "./sdl/Text.h"
+#include "Text.h"
 
+#include <memory>
 #include <string>
 
 struct CText {

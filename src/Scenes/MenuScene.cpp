@@ -1,5 +1,7 @@
 #include "MenuScene.h"
 
+#include <memory>
+
 MenuScene::MenuScene() {}
 
 MenuScene::~MenuScene() {}

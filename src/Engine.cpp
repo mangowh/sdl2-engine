@@ -1,5 +1,9 @@
 #include "Engine.h"
 
+#include "GeometryWarsScene.h"
+#include "MegamarioScene.h"
+#include "MenuScene.h"
+
 ActionManager actionManager;
 Window window;
 SceneManager sceneManager;
@@ -8,8 +12,8 @@ Engine::Engine(Config) {
   sceneManager.sceneMap.push_back(std::make_shared<MenuScene>()); // 0
 
   sceneManager.sceneMap.push_back(std::make_shared<GeometryWarsScene>()); // 1
-  sceneManager.sceneMap.push_back(std::make_shared<MegamarioScene>()); // 2
-  //sceneManager.sceneMap.push_back(std::make_shared<S>()) ; // 3
+  sceneManager.sceneMap.push_back(std::make_shared<MegamarioScene>());    // 2
+  // sceneManager.sceneMap.push_back(std::make_shared<S>()) ; // 3
 
   sceneManager.setCurrentScene(0);
 

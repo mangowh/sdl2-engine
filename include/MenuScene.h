@@ -1,12 +1,9 @@
 #pragma once
 
-#include "../ActionManager.h"
-#include "../CText.h"
-#include "../SceneManager.h"
-#include "../Window.h"
+#include "ActionManager.h"
 #include "Scene.h"
-
-#include <vector>
+#include "SceneManager.h"
+#include "Window.h"
 
 extern ActionManager actionManager;
 extern Window window;

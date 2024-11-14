@@ -1,5 +1,7 @@
 #include "GeometryWarsScene.h"
 
+#include "Random.h"
+
 GeometryWarsScene::GeometryWarsScene() {}
 
 void GeometryWarsScene::init() {

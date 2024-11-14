@@ -1,5 +1,4 @@
-#ifndef ENTITY_H
-#define ENTITY_H
+#pragma once
 
 #include "CCollision.h"
 #include "CInput.h"
@@ -10,9 +9,6 @@
 #include "CText.h"
 #include "CTilemap.h"
 #include "CTransform.h"
-
-#include <memory>
-#include <string>
 
 enum class EntityType { player, enemy, projectile, boundary, text, tilemap };
 
@@ -40,5 +36,3 @@ public:
 
   void destroy();
 };
-
-#endif // ENTITY_H

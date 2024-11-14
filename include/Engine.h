@@ -1,16 +1,8 @@
 #pragma once
 
 #include "ActionManager.h"
-#include "EntityManager.h"
-#include "Random.h"
 #include "SceneManager.h"
-#include "Scenes/GeometryWarsScene.h"
-#include "Scenes/MegamarioScene.h"
-#include "Scenes/MenuScene.h"
-#include "Scenes/Scene.h"
 #include "Window.h"
-
-#include <memory>
 
 extern ActionManager actionManager;
 extern Window window;

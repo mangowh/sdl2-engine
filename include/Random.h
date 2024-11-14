@@ -4,6 +4,7 @@
 #include <iostream>
 #include <random>
 
+// TODO turn into namespace
 class Random {
 public:
   int genRandomInt(int min = 0, int max = 100) {

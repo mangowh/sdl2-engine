@@ -1,5 +1,9 @@
 #include "Physics.h"
 
+#include <cmath>
+#include <iostream>
+#include <memory>
+
 Physics::Vector2 &Physics::Vector2::operator=(const Physics::Vector2 &v) {
   x = v.x;
   y = v.x;
@@ -90,6 +94,10 @@ Physics::Vector2 Physics::Vector2::normalized() const {
   return v;
 }
 
+std::string Physics::Vector2::toString() const {
+  return std::to_string(x) + ":" + std::to_string(y);
+}
+
 bool Physics::checkCollision(const Rect &rect1, const Rect &rect2) {
   int r1x = rect1.p1.x;
   int r1y = rect1.p1.y;
@@ -109,4 +117,37 @@ bool Physics::checkCollision(const Rect &rect1, const Rect &rect2) {
     return true;
   }
   return false;
+}
+
+Physics::Vector2 Physics::getCollisionVect(const Rect &rect1,
+                                           const Rect &rect2) {
+  Vector2 collisionVec{};
+
+  if (!checkCollision(rect1, rect2)) {
+    return collisionVec;
+  }
+
+  std::cout << std::endl << "rect1" << std::endl;
+  rect1.print();
+
+  if (rect1.center.x < rect2.center.x) {
+    collisionVec.x = 1;
+  } else if (rect1.center.x < rect2.center.x) {
+    collisionVec.x = -1;
+  }
+
+  if (rect1.center.y > rect2.center.y) {
+    collisionVec.y = 1;
+  } else if (rect1.center.y < rect2.center.y) {
+    collisionVec.y = -1;
+  }
+
+  return collisionVec;
+}
+
+// TODO toString
+void Physics::Rect::print() const {
+  std::cout << "p1 =" << p1.x << ":" << p1.y << std::endl;
+  std::cout << "p2 =" << p2.x << ":" << p2.y << std::endl;
+  std::cout << "center =" << center.x << ":" << center.y << std::endl;
 }

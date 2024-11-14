@@ -30,6 +30,8 @@ int main(int, char *) {
     }
   } catch (const YAML::Exception &e) {
     printException(e);
+
+    return EXIT_FAILURE;
   }
 
   // load lua scripts
@@ -42,6 +44,8 @@ int main(int, char *) {
     std::cerr << __FILE__ << ":" << __LINE__ << "\n"
               << "Error loading Lua scripts" << std::endl;
     std::cerr << e.what() << std::endl;
+
+    return EXIT_FAILURE;
   }
 
   Engine engine(config);

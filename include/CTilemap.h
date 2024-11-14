@@ -1,10 +1,9 @@
 #pragma once
 
-#include "./sdl/Texture.h"
 #include "CCollision.h"
 #include "Physics.h"
+#include "Texture.h"
 
-#include <string>
 #include <utility>
 #include <vector>
 

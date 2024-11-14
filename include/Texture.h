@@ -1,10 +1,9 @@
 #pragma once
 
-#include <iostream>
-#include <string>
-
 #include <SDL.h>
 #include <SDL_image.h>
+
+#include <string>
 
 struct Texture {
   Texture(SDL_Renderer *renderer, std::string path)

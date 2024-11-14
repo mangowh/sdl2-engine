@@ -2,9 +2,11 @@ cmake_minimum_required(VERSION 3.15 FATAL_ERROR)
 
 project ("CMakeProject1" VERSION 0.0.1 LANGUAGES CXX)
 
-add_executable (main "src/main.cpp"    "src/Window.cpp" "src/Window.h" "src/CShape.h"  "src/EntityManager.h" "src/EntityManager.cpp" "src/Entity.h" "src/Entity.cpp"  "src/Engine.h" "src/Engine.cpp"   "src/CTransform.h"  "src/Color.h" "src/CCollision.h" "src/CScore.h" "src/CLifespan.h" "src/CInput.h" "src/Random.h"    "src/Scenes/Scene.h" "src/Assets.h" "src/sdl/Texture.h" "src/sdl/Texture.cpp" "src/sdl/Sprite.h"  "src/Scenes/GeometryWarsScene.h" "src/Camera.h" "src/Scenes/GeometryWarsScene.cpp"  "src/Scenes/MenuScene.h" "src/Scenes/MenuScene.cpp" "src/Action.h" "src/ActionManager.h" "src/ActionManager.cpp" "src/sdl/Text.h" "src/sdl/Text.cpp" "src/CText.h" "src/SceneManager.h" "src/SceneManager.cpp" "src/Scenes/MegamarioScene.h" "src/Scenes/MegamarioScene.cpp" "src/CTilemap.h" "src/CSprite.h" "src/Physics.h" "src/Physics.cpp")
 
-target_compile_features(main PRIVATE cxx_std_20)
+add_executable (main "src/main.cpp"    "src/Window.cpp" "src/EntityManager.cpp" "src/Entity.cpp" "src/Engine.cpp" "src/sdl/Texture.cpp" "src/Scenes/GeometryWarsScene.cpp" "src/Scenes/MenuScene.cpp" "src/ActionManager.cpp" "src/sdl/Text.cpp" "src/SceneManager.cpp" "src/Scenes/MegamarioScene.cpp" "src/Physics.cpp")
+
+target_compile_features(main PRIVATE cxx_std_23)
+target_include_directories(main PRIVATE "./include")
 
 if(MSVC)
     target_compile_options(main PRIVATE

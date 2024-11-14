@@ -19,5 +19,6 @@ struct CTransform {
 
   CTransform() {};
   CTransform(const Physics::Vector2 &p) : position(p) {}
-  CTransform(const Physics::Vector2 &p, const Physics::Vector2 &v) : position(p), velocity(v) {}
+  CTransform(const Physics::Vector2 &p, const Physics::Vector2 &v)
+      : position(p), velocity(v) {}
 };

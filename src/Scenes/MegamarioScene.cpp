@@ -1,11 +1,13 @@
 #include "MegamarioScene.h"
 
-#include "../Physics.h"
+#include "CTilemap.h"
+#include "Physics.h"
 
 #include <iomanip>
 #include <sstream>
 
 #include <SDL.h>
+#include <sol/sol.hpp>
 
 void MegamarioScene::init() {
   player = entityManager.addEntity(EntityType::player);
@@ -85,26 +87,18 @@ void MegamarioScene::update() {
                 const Physics::Rect r{c.p1, c.p2};
                 const Physics::Rect r2{c2.p1, c2.p2};
 
-                const auto colliding = Physics::checkCollision(r, r2);
+                const auto collisionVec = Physics::getCollisionVect(r, r2);
 
-                if (colliding) {
-                  if (c.center.x < c2.center.x) {
-                    if (player->cTransform->velocity.x < 0) {
-                      player->cTransform->velocity.x = 0;
-                    }
-                  } else if (c.center.x < c2.center.x) {
-                    if (player->cTransform->velocity.x > 0) {
-                      player->cTransform->velocity.x = 0;
-                    }
-                  } else if (c.center.y > c2.center.y) {
-                    if (player->cTransform->velocity.y < 0) {
-                      player->cTransform->velocity.y = 0;
-                    }
-                  } else if (c.center.y < c2.center.y) {
-                    if (player->cTransform->velocity.y > 0) {
-                      player->cTransform->velocity.y = 0;
-                    }
-                  }
+                if (collisionVec.x > 0 && player->cTransform->velocity.x > 0 ||
+                    collisionVec.x < 0 && player->cTransform->velocity.x < 0) {
+                  std::cout << collisionVec.toString() << std::endl;
+                  player->cTransform->velocity.x = 0;
+                }
+
+                if (collisionVec.y < 0 && player->cTransform->velocity.y > 0 ||
+                    collisionVec.y > 0 && player->cTransform->velocity.y < 0) {
+                  std::cout << collisionVec.toString() << std::endl;
+                  player->cTransform->velocity.y = 0;
                 }
               }
             }

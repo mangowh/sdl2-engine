@@ -1,8 +1,8 @@
 #pragma once
 
-// #include "Scenes/GeometryWarsScene.h"
-// #include "Scenes/MenuScene.h"
-#include "Scenes/Scene.h"
+// #include "GeometryWarsScene.h"
+// #include "MenuScene.h"
+#include "Scene.h"
 
 #include <memory>
 #include <vector>

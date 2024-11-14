@@ -1,10 +1,8 @@
-#ifndef CSCHAPE_H
-#define CSCHAPE_H
+#pragma once
 
 #include "Color.h"
 #include "Physics.h"
 
-#include <string>
 #include <vector>
 
 enum ShapeType { triangle, rect };
@@ -27,5 +25,3 @@ public:
 
   Color color{255, 255, 255};
 };
-
-#endif // CSCHAPE_H

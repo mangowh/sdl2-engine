@@ -2,10 +2,8 @@
 
 #include "Entity.h"
 
-#include <algorithm>
 #include <map>
 #include <memory>
-#include <string>
 #include <vector>
 
 typedef std::vector<std::shared_ptr<Entity>> EntityVec;

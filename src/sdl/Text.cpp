@@ -17,9 +17,9 @@ Text::Text(SDL_Renderer *renderer, std::string text, SDL_Color color)
 Text::~Text() {
   // throws exception on application close
 
-  //SDL_DestroyTexture(texture);
-  //SDL_FreeSurface(textSurface);
-  //TTF_CloseFont(defaultFont);
+  // SDL_DestroyTexture(texture);
+  // SDL_FreeSurface(textSurface);
+  // TTF_CloseFont(defaultFont);
 }
 
 void Text::setColor(SDL_Color &color) {
