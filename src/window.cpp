@@ -130,37 +130,37 @@ void Window::handleEvents() {
   if (event.type == SDL_KEYDOWN) {
     switch (event.key.keysym.sym) {
     case (SDLK_ESCAPE): {
-      actionManager.dispatchAction(ActionName::esc, ActionType::start);
+      gActionManager.dispatchAction(ActionName::esc, ActionType::start);
       break;
     }
 
     case (SDLK_a): {
-      actionManager.dispatchAction(ActionName::left, ActionType::start);
+      gActionManager.dispatchAction(ActionName::left, ActionType::start);
       break;
     }
 
     case (SDLK_w): {
-      actionManager.dispatchAction(ActionName::top, ActionType::start);
+      gActionManager.dispatchAction(ActionName::top, ActionType::start);
       break;
     }
 
     case (SDLK_d): {
-      actionManager.dispatchAction(ActionName::right, ActionType::start);
+      gActionManager.dispatchAction(ActionName::right, ActionType::start);
       break;
     }
 
     case (SDLK_s): {
-      actionManager.dispatchAction(ActionName::bottom, ActionType::start);
+      gActionManager.dispatchAction(ActionName::bottom, ActionType::start);
       break;
     }
 
     case (SDLK_SPACE): {
-      actionManager.dispatchAction(ActionName::confirm, ActionType::start);
+      gActionManager.dispatchAction(ActionName::confirm, ActionType::start);
       break;
     }
 
     case (SDLK_p): {
-      actionManager.dispatchAction(ActionName::togglePause, ActionType::start);
+      gActionManager.dispatchAction(ActionName::togglePause, ActionType::start);
       break;
     }
     }

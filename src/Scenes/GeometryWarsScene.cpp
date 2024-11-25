@@ -9,11 +9,11 @@ void GeometryWarsScene::init() {
 
   spawnPlayer();
 
-  window.onClick = [&](Physics::Vector2 coords) { spawnProjectile(coords); };
+  gWindow.onClick = [&](Physics::Vector2 coords) { spawnProjectile(coords); };
 
-  window.onRightClick = [&](Physics::Vector2 coords) { specialMove(coords); };
+  gWindow.onRightClick = [&](Physics::Vector2 coords) { specialMove(coords); };
 
-  actionManager.registerSubscriber(ActionName::esc, [&](Action) {
+  gActionManager.registerSubscriber(ActionName::esc, [&](Action) {
     // TODO go back
   });
 }
@@ -33,7 +33,7 @@ void GeometryWarsScene::update() {
 }
 
 void GeometryWarsScene::sUserInput() {
-  auto keyboardState = window.keyboardState;
+  auto keyboardState = gWindow.keyboardState;
 
   const int playerSpeed = 10;
 
@@ -187,17 +187,17 @@ void GeometryWarsScene::sEnemySpawner() {
 }
 
 void GeometryWarsScene::sRender() {
-  window.clear();
+  gWindow.clear();
 
   for (auto &e : entityManager.getEntities()) {
     if (e->cTransform && e->cShape) {
-      window.drawShape(e->cTransform, e->cShape);
+      gWindow.drawShape(e->cTransform, e->cShape);
     }
 
-    window.drawDebug(e);
+    gWindow.drawDebug(e);
   }
 
-  window.render();
+  gWindow.render();
 }
 
 /**
@@ -274,8 +274,8 @@ bool GeometryWarsScene::checkCollision(std::shared_ptr<CCollision> c1,
 void GeometryWarsScene::setWorldBoundaries() {
   const int boundarySize = 10;
 
-  const int windowW = (int)window.getWidth();
-  const int windowH = (int)window.getHeight();
+  const int windowW = (int)gWindow.getWidth();
+  const int windowH = (int)gWindow.getHeight();
 
   const auto topBoundary = entityManager.addEntity(EntityType::boundary);
   topBoundary->cTransform =
@@ -305,8 +305,8 @@ void GeometryWarsScene::setWorldBoundaries() {
 }
 
 void GeometryWarsScene::spawnPlayer() {
-  Physics::Vector2 centerOfScreen = {(window.getWidth() - 100) / 2,
-                                     (window.getHeight() - 100) / 2};
+  Physics::Vector2 centerOfScreen = {(gWindow.getWidth() - 100) / 2,
+                                     (gWindow.getHeight() - 100) / 2};
 
   player = entityManager.addEntity(EntityType::player);
   player->cTransform = std::make_shared<CTransform>(centerOfScreen);
@@ -316,26 +316,23 @@ void GeometryWarsScene::spawnPlayer() {
 }
 
 void GeometryWarsScene::spawnEnemy() {
-  Random rand;
-
-  Physics::Vector2 pos = {(int)rand.genRandomInt(0, window.getWidth()),
-                          (int)rand.genRandomInt(0, window.getHeight())};
+  Physics::Vector2 pos = {(int)Random::genRandomInt(0, gWindow.getWidth()),
+                          (int)Random::genRandomInt(0, gWindow.getHeight())};
 
   auto enemy = entityManager.addEntity(EntityType::enemy);
   enemy->cTransform = std::make_shared<CTransform>(
-      CTransform(pos, {(rand.genRandomInt(1, 200) - 100) / 10,
-                       (rand.genRandomInt(1, 200) - 100) / 10}));
+      CTransform(pos, {(Random::genRandomInt(1, 200) - 100) / 10,
+                       (Random::genRandomInt(1, 200) - 100) / 10}));
 
-  enemy->cShape = std::make_shared<CShape>(CShape(
-      50, 50,
-      {(uint8_t)rand.genRandomInt(0, 255), (uint8_t)rand.genRandomInt(0, 255),
-       (uint8_t)rand.genRandomInt(0, 255)}));
+  enemy->cShape =
+      std::make_shared<CShape>(CShape(50, 50,
+                                      {(uint8_t)Random::genRandomInt(0, 255),
+                                       (uint8_t)Random::genRandomInt(0, 255),
+                                       (uint8_t)Random::genRandomInt(0, 255)}));
   enemy->cCollision = std::make_shared<CCollision>(pos, pos + 50);
 }
 
 void GeometryWarsScene::spawnProjectile(Physics::Vector2 direction) {
-  Random rand;
-
   auto playerPosition = player->cTransform->position;
 
   Physics::Vector2 playerCenter =
@@ -359,9 +356,9 @@ void GeometryWarsScene::spawnProjectile(Physics::Vector2 direction) {
   v2 -= dimension / 2;
   v3 -= dimension / 2;
 
-  const Color randomColor = {(uint8_t)rand.genRandomInt(0, 255),
-                             (uint8_t)rand.genRandomInt(0, 255),
-                             (uint8_t)rand.genRandomInt(0, 255)};
+  const Color randomColor = {(uint8_t)Random::genRandomInt(0, 255),
+                             (uint8_t)Random::genRandomInt(0, 255),
+                             (uint8_t)Random::genRandomInt(0, 255)};
   projectile->cShape =
       std::make_shared<CShape>(CShape(v1, v2, v3, randomColor));
   projectile->cCollision =

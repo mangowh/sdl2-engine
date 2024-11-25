@@ -3,7 +3,7 @@
 #include "Scene.h"
 #include "Window.h"
 
-extern Window window;
+extern Window gWindow;
 
 class GeometryWarsScene : public Scene {
 public:

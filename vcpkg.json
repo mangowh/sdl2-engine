@@ -4,8 +4,9 @@
     "opengl",
     "sdl2",
     "sdl2-image",
+    "sdl2-ttf",
     "sol2",
     "yaml-cpp",
-    "sdl2-ttf"
+    "plog"
   ]
 }

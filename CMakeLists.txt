@@ -10,18 +10,16 @@ target_include_directories(main PRIVATE "./include")
 
 if(MSVC)
     target_compile_options(main PRIVATE
-        /W4               
-        /WX               
-        /permissive-      
+        /permissive- /W4 /w14640
     )
 else()
     target_compile_options(main PRIVATE
-        -Wall -Wextra
-        -Werror
-        -Wpedantic
+        -Wall -Wextra -Wshadow -Wnon-virtual-dtor -pedantic
     )
 endif()
 
+find_package(plog CONFIG REQUIRED)
+target_link_libraries(main PRIVATE plog::plog)
 
 find_package(SDL2 CONFIG REQUIRED)
 target_link_libraries(main

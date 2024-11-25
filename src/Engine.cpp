@@ -4,28 +4,29 @@
 #include "MegamarioScene.h"
 #include "MenuScene.h"
 
-ActionManager actionManager;
-Window window;
-SceneManager sceneManager;
+// TODO inline/const
+ActionManager gActionManager;
+Window gWindow;
+SceneManager gSceneManager;
 
 Engine::Engine(Config) {
-  sceneManager.sceneMap.push_back(std::make_shared<MenuScene>()); // 0
+  gSceneManager.sceneMap.push_back(std::make_shared<MenuScene>()); // 0
 
-  sceneManager.sceneMap.push_back(std::make_shared<GeometryWarsScene>()); // 1
-  sceneManager.sceneMap.push_back(std::make_shared<MegamarioScene>());    // 2
+  gSceneManager.sceneMap.push_back(std::make_shared<GeometryWarsScene>()); // 1
+  gSceneManager.sceneMap.push_back(std::make_shared<MegamarioScene>());    // 2
   // sceneManager.sceneMap.push_back(std::make_shared<S>()) ; // 3
 
-  sceneManager.setCurrentScene(0);
+  gSceneManager.setCurrentScene(0);
 
-  window.addCallback([&]() {
+  gWindow.addCallback([&]() {
     sUserInput();
 
-    sceneManager.getCurrentScene()->update();
+    gSceneManager.getCurrentScene()->update();
 
     currentFrame++;
   });
 
-  actionManager.registerSubscriber(ActionName::togglePause, [&](Action) {
+  gActionManager.registerSubscriber(ActionName::togglePause, [&](Action) {
     if (!paused) {
       pause();
     } else {
@@ -35,9 +36,9 @@ Engine::Engine(Config) {
 }
 
 void Engine::run() const {
-  while (!window.shouldQuit) {
+  while (!gWindow.shouldQuit) {
     if (!paused) {
-      window.mainLoop();
+      gWindow.mainLoop();
     }
   }
 }
@@ -47,11 +48,11 @@ void Engine::resume() { paused = false; }
 void Engine::pause() { paused = true; }
 
 void Engine::sUserInput() const {
-  auto keyboardState = window.keyboardState;
+  auto keyboardState = gWindow.keyboardState;
 
   // Fullscreen
   // TODO use SDL_Event pool for
   if (keyboardState[SDL_SCANCODE_F]) {
-    window.setFullscreen();
+    gWindow.setFullscreen();
   }
 }

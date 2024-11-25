@@ -9,15 +9,22 @@
 #include <streambuf>
 #include <string>
 
+#include <plog/Appenders/ColorConsoleAppender.h>
+#include <plog/Formatters/TxtFormatter.h>
+#include <plog/Init.h>
+#include <plog/Log.h>
 #include <sol/sol.hpp>
 #include <yaml-cpp/yaml.h>
 
-static void printException(std::runtime_error e) {
-  std::cerr << __FILE__ << ":" << __LINE__ << "\n" << "Error" << std::endl;
-  std::cerr << e.what() << std::endl;
+static void printException(std::exception e, std::string msg = "Error") {
+  PLOG_ERROR << __FILE__ << ":" << __LINE__ << "\n" << msg;
+  PLOG_ERROR << e.what();
 }
 
 int main(int, char *) {
+  static plog::ColorConsoleAppender<plog::TxtFormatter> consoleAppender;
+  plog::init(plog::verbose, &consoleAppender);
+
   SDL_SetMainReady();
 
   // load configuration
@@ -29,7 +36,7 @@ int main(int, char *) {
       config.playerSpeed = node["playerSpeed"].as<int>();
     }
   } catch (const YAML::Exception &e) {
-    printException(e);
+    printException(e, "Error loading YAML configuration");
 
     return EXIT_FAILURE;
   }
@@ -41,9 +48,7 @@ int main(int, char *) {
   try {
     lua.script_file("scripts/script.lua");
   } catch (const std::exception &e) {
-    std::cerr << __FILE__ << ":" << __LINE__ << "\n"
-              << "Error loading Lua scripts" << std::endl;
-    std::cerr << e.what() << std::endl;
+    printException(e, "Error loading lua script");
 
     return EXIT_FAILURE;
   }

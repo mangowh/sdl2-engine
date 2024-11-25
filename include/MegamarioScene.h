@@ -4,7 +4,7 @@
 #include "Scene.h"
 #include "Window.h"
 
-extern Window window;
+extern Window gWindow;
 
 class MegamarioScene : public Scene {
 public:

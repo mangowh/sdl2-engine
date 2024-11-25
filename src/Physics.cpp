@@ -4,6 +4,8 @@
 #include <iostream>
 #include <memory>
 
+namespace Physics {
+
 Physics::Vector2 &Physics::Vector2::operator=(const Physics::Vector2 &v) {
   x = v.x;
   y = v.x;
@@ -151,3 +153,4 @@ void Physics::Rect::print() const {
   std::cout << "p2 =" << p2.x << ":" << p2.y << std::endl;
   std::cout << "center =" << center.x << ":" << center.y << std::endl;
 }
+} // namespace Physics

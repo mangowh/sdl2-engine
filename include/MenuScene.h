@@ -5,9 +5,9 @@
 #include "SceneManager.h"
 #include "Window.h"
 
-extern ActionManager actionManager;
-extern Window window;
-extern SceneManager sceneManager;
+extern ActionManager gActionManager;
+extern Window gWindow;
+extern SceneManager gSceneManager;
 
 class MenuScene : public Scene {
 public:

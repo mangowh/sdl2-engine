@@ -15,7 +15,7 @@
 #include <string>
 #include <vector>
 
-extern ActionManager actionManager;
+extern ActionManager gActionManager;
 
 class Window {
 public:

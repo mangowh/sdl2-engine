@@ -13,7 +13,7 @@ void MegamarioScene::init() {
   player = entityManager.addEntity(EntityType::player);
   const Physics::Vector2 initialPos{300, 300};
   player->cTransform = std::make_shared<CTransform>(initialPos);
-  player->cSprite = std::make_shared<CSprite>(window.getRenderer());
+  player->cSprite = std::make_shared<CSprite>(gWindow.getRenderer());
   player->cCollision =
       std::make_shared<CCollision>(initialPos, initialPos + 60);
 
@@ -34,7 +34,7 @@ void MegamarioScene::init() {
       tilemap->cTilemap = std::make_shared<CTilemap>();
 
       const auto size = tilemap->cTilemap->size;
-      const auto tilesOnRow = window.getWidth() / size;
+      const auto tilesOnRow = gWindow.getWidth() / size;
 
       const auto &properties = layer["properties"];
       const bool &isCollision = properties["collision"].get_or(false);
@@ -49,7 +49,7 @@ void MegamarioScene::init() {
 
           std::string path = "./assets/tiles/tile_" + s + ".png";
 
-          Texture t{window.getRenderer(), path};
+          Texture t{gWindow.getRenderer(), path};
 
           const auto x = (i - 1) % tilesOnRow;
           const auto y = (i - 1) / tilesOnRow;
@@ -127,7 +127,7 @@ void MegamarioScene::update() {
 }
 
 void MegamarioScene::sUserInput() {
-  auto keyboardState = window.keyboardState;
+  auto keyboardState = gWindow.keyboardState;
 
   const int playerSpeed = 10;
 
@@ -149,7 +149,7 @@ void MegamarioScene::sUserInput() {
 }
 
 void MegamarioScene::sRender() {
-  window.clear();
+  gWindow.clear();
 
   for (auto &e : entityManager.getEntities()) {
     if (e->cTilemap) {
@@ -163,13 +163,13 @@ void MegamarioScene::sRender() {
         SDL_Rect dstRect = {static_cast<int>(pos.x), static_cast<int>(pos.y),
                             static_cast<int>(size), static_cast<int>(size)};
 
-        SDL_RenderCopy(window.getRenderer(), (SDL_Texture *)texture.texture,
+        SDL_RenderCopy(gWindow.getRenderer(), (SDL_Texture *)texture.texture,
                        NULL, &dstRect);
       }
     }
 
     if (e->cTransform && e->cShape) {
-      window.drawShape(e->cTransform, e->cShape);
+      gWindow.drawShape(e->cTransform, e->cShape);
     }
 
     if (e->cTransform && e->cSprite) {
@@ -179,12 +179,12 @@ void MegamarioScene::sRender() {
                           e->cSprite->width, e->cSprite->height};
 
       // Render the sprite
-      SDL_RenderCopy(window.getRenderer(), e->cSprite->getTexture(), NULL,
+      SDL_RenderCopy(gWindow.getRenderer(), e->cSprite->getTexture(), NULL,
                      &dstRect);
     }
 
-    window.drawDebug(e);
+    gWindow.drawDebug(e);
   }
 
-  window.render();
+  gWindow.render();
 }
